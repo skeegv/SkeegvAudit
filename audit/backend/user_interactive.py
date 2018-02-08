@@ -1,11 +1,13 @@
 import getpass
+import subprocess
+
 from django.contrib.auth import authenticate
 
 
 class UserShell(object):
     """Shell after the user login audit """
 
-    def __init__(self,sys_argv):
+    def __init__(self, sys_argv):
         self.sys_argv = sys_argv
         self.user = None
 
@@ -34,17 +36,17 @@ class UserShell(object):
         if self.auth():
             print("self.user", self.user)
             print("self.user_type", type(self.user))
-            print("self.user.password",self.user.password)
+            print("self.user.password", self.user.password)
 
-            print("self.account.host_user_binds",self.user.account.host_user_binds.select_related())
+            print("self.account.host_user_binds", self.user.account.host_user_binds.select_related())
             # print("self.account.host_user_binds",self.user.account.host_user_binds.all()) .select_related()等同于 .all()
 
             # 显示 User 能访问的HostGroups
             while True:
                 host_group = self.user.account.host_groups.select_related()
-                for index,group in enumerate(host_group):
-                    print("%s.\t%s[%s]"%(index, group,group.host_user_binds.count()))
-                print("%s.\t%s[%s]"%(len(host_group), "未分组机器", self.user.account.host_user_binds.count()))
+                for index, group in enumerate(host_group):
+                    print("%s.\t%s[%s]" % (index, group, group.host_user_binds.count()))
+                print("%s.\t%s[%s]" % (len(host_group), "未分组机器", self.user.account.host_user_binds.count()))
 
                 # 选中的组
                 choice = input("select group>: ").strip()
@@ -54,26 +56,28 @@ class UserShell(object):
                     if choice >= 0 and choice < len(host_group):
                         selected_group = host_group[choice]
                         host_bind_list = selected_group.host_user_binds.all()
-                    elif choice == len(host_group): # 选择的未分组机器
+                    elif choice == len(host_group):  # 选择的未分组机器
                         host_bind_list = self.user.account.host_user_binds.all()
                     if host_bind_list:
                         # 停留在主机层
                         while True:
                             for index, host in enumerate(host_bind_list):
-                                print("%s\t%s" %(index, host))
+                                print("%s\t%s" % (index, host))
                             # 选中的主机
                             choice2 = input("select group>: ").strip()
                             if choice2.isdigit():
-                                choice2 = int(choice)
+                                choice2 = int(choice2)
+                                print(1111111)
+                                print('choice2',choice2)
                                 if choice2 >= 0 and choice2 < len(host_bind_list):
+                                    print(2222)
                                     selected_host = host_bind_list[choice2]
                                     print("select host", selected_host)
+                                    cmd = "sshpass -p e%s ssh %s@%s -p %s -o StrictHostKeyChecking=no" % (selected_host.host_user.password,
+                                    selected_host.host_user.username, selected_host.host.ip_addr, selected_host.host.port)
+                                    print(cmd)
+                                    # 启动登录程序
+                                    ssh_channel = subprocess.run(cmd, shell=True)
+
                             elif choice2 == 'b':
                                 break
-
-
-
-
-
-
-
