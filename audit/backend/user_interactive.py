@@ -1,6 +1,5 @@
 import getpass
 import subprocess
-
 from django.contrib.auth import authenticate
 
 
@@ -67,15 +66,18 @@ class UserShell(object):
                             choice2 = input("select group>: ").strip()
                             if choice2.isdigit():
                                 choice2 = int(choice2)
-                                print(1111111)
                                 print('choice2',choice2)
                                 if choice2 >= 0 and choice2 < len(host_bind_list):
-                                    print(2222)
                                     selected_host = host_bind_list[choice2]
-                                    print("select host", selected_host)
-                                    cmd = "sshpass -p e%s ssh %s@%s -p %s -o StrictHostKeyChecking=no" % (selected_host.host_user.password,
-                                    selected_host.host_user.username, selected_host.host.ip_addr, selected_host.host.port)
+                                    import string
+                                    import random
+                                    s = string.ascii_lowercase + string.digits
+                                    random_tag = ''.join(random.sample(s, 10))
+                                    cmd = "sshpass -p %s /usr/local/openssh/bin/ssh %s@%s -p %s -o StrictHostKeyChecking=no -Z %s" % (selected_host.host_user.password,
+                                    selected_host.host_user.username, selected_host.host.ip_addr, selected_host.host.port, random_tag)
+                                    # start strace, and sleep 1 random_tag
                                     print(cmd)
+
                                     # 启动登录程序
                                     ssh_channel = subprocess.run(cmd, shell=True)
 
