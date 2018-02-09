@@ -8,7 +8,7 @@ for i in $(seq 1 30);do
     echo "process:$process_id"
     if [ ! -z "$process_id" ];then
          echo 'start run strace...'
-         sudo strace -ftp $process_id -o ssh_audit_$2.log;
+         sudo strace -ftp $process_id -o ../../logs/ssh_audit_$2.log;
          break;
     fi
     sleep 5

@@ -80,5 +80,5 @@ class AuditLogHandler(object):
 
 
 if __name__ == "__main__":
-    parser = AuditLogHandler('../../ssh_audit_8.log')
+    parser = AuditLogHandler('../../ssh_audit_11.log')
     parser.parse()
