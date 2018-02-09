@@ -1,7 +1,8 @@
 import getpass
 import subprocess
 from django.contrib.auth import authenticate
-
+from audit import models
+from django.conf import settings
 
 class UserShell(object):
     """Shell after the user login audit """
@@ -36,7 +37,6 @@ class UserShell(object):
             print("self.user", self.user)
             print("self.user_type", type(self.user))
             print("self.user.password", self.user.password)
-
             print("self.account.host_user_binds", self.user.account.host_user_binds.select_related())
             # print("self.account.host_user_binds",self.user.account.host_user_binds.all()) .select_related()等同于 .all()
 
@@ -73,13 +73,18 @@ class UserShell(object):
                                     import random
                                     s = string.ascii_lowercase + string.digits
                                     random_tag = ''.join(random.sample(s, 10))
-                                    cmd = "sshpass -p %s /usr/local/openssh/bin/ssh %s@%s -p %s -o StrictHostKeyChecking=no -Z %s" % (selected_host.host_user.password,
-                                    selected_host.host_user.username, selected_host.host.ip_addr, selected_host.host.port, random_tag)
-                                    # start strace, and sleep 1 random_tag
-                                    print(cmd)
+                                    session_obj = models.SessionLog.objects.create(account=self.user.account,host_user_bind=selected_host)
+                                    cmd = "sshpass -p %s /usr/local/openssh/bin/ssh %s@%s -p %s -o StrictHostKeyChecking=no -Z %s" %(selected_host.host_user.password,selected_host.host_user.username, selected_host.host.ip_addr, selected_host.host.port, random_tag)
 
+                                    print(cmd)
+                                    # start strace, and sleep 1 random_tag,session_obj.id
+                                    session_tracker_script = "/bin/sh %s %s %s" %(settings.SESSION_TRACKER_SCRIPT,random_tag,session_obj.id)
+                                    # 启动会话检测脚本
+                                    session_tracker_obj = subprocess.Popen(session_tracker_script,shell=True,stdout=subprocess.PIPE,stderr=subprocess.PIPE)
                                     # 启动登录程序
                                     ssh_channel = subprocess.run(cmd, shell=True)
+                                    # 读取结果
+                                    print(session_tracker_obj.stdout.read(), session_tracker_obj.stderr.read())
 
                             elif choice2 == 'b':
                                 break
