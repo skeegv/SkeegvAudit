@@ -62,29 +62,32 @@ class UserShell(object):
                         while True:
                             for index, host in enumerate(host_bind_list):
                                 print("%s\t%s" % (index, host))
-                            # 选中的主机
-                            choice2 = input("select group>: ").strip()
-                            if choice2.isdigit():
-                                choice2 = int(choice2)
-                                print('choice2',choice2)
-                                if choice2 >= 0 and choice2 < len(host_bind_list):
-                                    selected_host = host_bind_list[choice2]
-                                    import string
-                                    import random
-                                    s = string.ascii_lowercase + string.digits
-                                    random_tag = ''.join(random.sample(s, 10))
-                                    session_obj = models.SessionLog.objects.create(account=self.user.account,host_user_bind=selected_host)
-                                    cmd = "sshpass -p %s /usr/local/openssh/bin/ssh %s@%s -p %s -o StrictHostKeyChecking=no -Z %s" %(selected_host.host_user.password,selected_host.host_user.username, selected_host.host.ip_addr, selected_host.host.port, random_tag)
+                            try:
+                                # 选中的主机
+                                choice2 = input("select group>: ").strip()
+                                if choice2.isdigit():
+                                    choice2 = int(choice2)
+                                    if choice2 >= 0 and choice2 < len(host_bind_list):
+                                        selected_host = host_bind_list[choice2]
+                                        import string
+                                        import random
+                                        s = string.ascii_lowercase + string.digits
+                                        random_tag = ''.join(random.sample(s, 10))
+                                        session_obj = models.SessionLog.objects.create(account=self.user.account,host_user_bind=selected_host)
+                                        cmd = "sshpass -p %s /usr/local/openssh/bin/ssh %s@%s -p %s -o StrictHostKeyChecking=no -Z %s" %(selected_host.host_user.password,selected_host.host_user.username, selected_host.host.ip_addr, selected_host.host.port, random_tag)
 
-                                    print(cmd)
-                                    # start strace, and sleep 1 random_tag,session_obj.id
-                                    session_tracker_script = "/bin/sh %s %s %s" %(settings.SESSION_TRACKER_SCRIPT,random_tag,session_obj.id)
-                                    # 启动会话检测脚本
-                                    session_tracker_obj = subprocess.Popen(session_tracker_script,shell=True,stdout=subprocess.PIPE,stderr=subprocess.PIPE)
-                                    # 启动登录程序
-                                    ssh_channel = subprocess.run(cmd, shell=True)
-                                    # 读取结果
-                                    print(session_tracker_obj.stdout.read(), session_tracker_obj.stderr.read())
+                                        # start strace, and sleep 1 random_tag,session_obj.id
+                                        session_tracker_script = "/bin/sh %s %s %s" %(settings.SESSION_TRACKER_SCRIPT,random_tag,session_obj.id)
+                                        # 启动会话检测脚本
+                                        session_tracker_obj = subprocess.Popen(session_tracker_script,shell=True,stdout=subprocess.PIPE,stderr=subprocess.PIPE)
+                                        # 启动登录程序
+                                        ssh_channel = subprocess.run(cmd, shell=True)
+                                        # 读取结果
+                                        print(session_tracker_obj.stdout.read(), session_tracker_obj.stderr.read())
 
-                            elif choice2 == 'b':
-                                break
+                                elif choice2 == 'b':
+                                    break
+                            # 捕获 control + c (Crtl+c) 异常
+                            except KeyboardInterrupt as e:
+                                pass
+
