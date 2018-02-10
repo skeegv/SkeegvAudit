@@ -92,7 +92,7 @@ def posix_shell(chan, session_obj):
                 if len(x) == 0:
                     break
                 if x == '\r':
-                    print('--->', cmd)
+#                    print('--->', cmd)
 
                     # 写入数据库
                     models.AuditLog.objects.create(session=session_obj, cmd=cmd)

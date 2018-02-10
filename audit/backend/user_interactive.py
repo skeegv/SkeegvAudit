@@ -70,7 +70,7 @@ class UserShell(object):
             """
             # self.user 是 Django 认证成功之后的对象.
             self.user = token_obj.account.user
-            ssh_interactive.ssh_session(token_obj, self.user)
+            ssh_interactive.ssh_session(token_obj.host_user_bind, self.user)
             # 不需要往下走了,退出程序即可
             exit()
 
