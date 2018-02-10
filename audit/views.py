@@ -70,3 +70,10 @@ def get_host_list(request):
                                                 'host__idc__name')))
 
         return HttpResponse(data)
+
+#  获取 token
+@login_required
+def get_token(request):
+    """生成 token 并返回"""
+    print(request.POST)
+    return HttpResponse(...)

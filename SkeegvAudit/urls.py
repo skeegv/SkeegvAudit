@@ -24,4 +24,5 @@ urlpatterns = [
     url(r'^logout/$', views.acc_logout),
     url(r'^hostlist/$', views.host_list, name="host_list"),
     url(r'^api/hostlist/$', views.get_host_list,name='get_host_list'),
+    url(r'^api/token/$', views.get_token,name='get_token'),
 ]
