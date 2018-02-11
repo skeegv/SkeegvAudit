@@ -20,6 +20,7 @@
 import socket
 import sys
 import time
+from audit import models
 from paramiko.py3compat import u
 
 # windows does not have termios...
@@ -31,17 +32,18 @@ except ImportError:
     has_termios = False
 
 
-def interactive_shell(chan):
+# chan 是会话实例/session_obj 是 SessionLog表的对象
+def interactive_shell(chan, session_obj):
     # 如果有终端
     if has_termios:
         # Unix 通用协议标准
-        posix_shell(chan)
+        posix_shell(chan,session_obj)
     else:
         # Windows PowerShell
-        windows_shell(chan)
+        windows_shell(chan,session_obj)
 
 
-def posix_shell(chan):
+def posix_shell(chan,session_obj):
     import select  # select 用于检测文件句柄
 
     # sys.stdin(标准输入)、sys.stdout(标准输出)和sys.stderr(错误输出) 。
@@ -89,26 +91,25 @@ def posix_shell(chan):
                     break
                 if x == '\r':
                     print('--->', cmd)
-                    # 写入文件
-                    f.write('%s\t%s\n' % (time.time(), cmd))
+
+                    # 写入数据库
+                    models.AuditLog.objects.create(session=session_obj,cmd=cmd)
                     cmd = ''
                 else:
                     cmd += x
                 # 读到:发送数据：使用send()
                 chan.send(x)
-        # 关闭文件
-        f.close()
 
     finally:
         termios.tcsetattr(sys.stdin, termios.TCSADRAIN, oldtty)
 
-    
+
 # thanks to Mike Looijmans for this code
 def windows_shell(chan):
     import threading
 
     sys.stdout.write("Line-buffered terminal emulation. Press F6 or ^Z to send EOF.\r\n\r\n")
-        
+
     def writeall(sock):
         while True:
             data = sock.recv(256)
@@ -118,10 +119,10 @@ def windows_shell(chan):
                 break
             sys.stdout.write(data)
             sys.stdout.flush()
-        
+
     writer = threading.Thread(target=writeall, args=(chan,))
     writer.start()
-        
+
     try:
         while True:
             d = sys.stdin.read(1)

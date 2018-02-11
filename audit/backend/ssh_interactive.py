@@ -1,24 +1,5 @@
 #!/usr/bin/env python
 
-# Copyright (C) 2003-2007  Robey Pointer <robeypointer@gmail.com>
-#
-# This file is part of paramiko.
-#
-# Paramiko is free software; you can redistribute it and/or modify it under the
-# terms of the GNU Lesser General Public License as published by the Free
-# Software Foundation; either version 2.1 of the License, or (at your option)
-# any later version.
-#
-# Paramiko is distributed in the hope that it will be useful, but WITHOUT ANY
-# WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
-# A PARTICULAR PURPOSE.  See the GNU Lesser General Public License for more
-# details.
-#
-# You should have received a copy of the GNU Lesser General Public License
-# along with Paramiko; if not, write to the Free Software Foundation, Inc.,
-# 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA.
-
-
 import base64
 from binascii import hexlify
 import getpass
@@ -28,6 +9,7 @@ import socket
 import sys
 import time
 import traceback
+from audit import models
 from paramiko.py3compat import input
 
 import paramiko
@@ -36,147 +18,82 @@ try:
 except ImportError:
     from . import interactive
 
+def manual_auth(t,username, password):
+    t.auth_password(username, password)
 
-def agent_auth(transport, username):
-    """
-    Attempt to authenticate to the given transport using any of the private
-    keys available from an SSH agent.
-    """
+def ssh_session(bind_host_user, user_obj):
 
-    agent = paramiko.Agent()
-    agent_keys = agent.get_keys()
-    if len(agent_keys) == 0:
-        return
+    # bind_host_user 是HostUserBind 表对象(主机绑定用户中的 其中一条数据对象)
+    hostname = bind_host_user.host.ip_addr
+    port = bind_host_user.host.host.port
+    username = bind_host_user.host_user.username
+    password = bind_host_user.host_user.password
+    # now connect
+    try:
+        sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        sock.connect((hostname, port))
+    except Exception as e:
+        print('*** Connect failed: ' + str(e))
+        traceback.print_exc()
+        sys.exit(1)
 
-    for key in agent_keys:
-        print('Trying ssh-agent key %s' % hexlify(key.get_fingerprint()))
+    try:
+        t = paramiko.Transport(sock)
         try:
-            transport.auth_publickey(username, key)
-            print('... success!')
-            return
+            t.start_client()
         except paramiko.SSHException:
-            print('... nope.')
+            print('*** SSH negotiation failed.')
+            sys.exit(1)
 
-
-def manual_auth(username, hostname):
-    default_auth = 'p'
-    auth = input('Auth by (p)assword, (r)sa key, or (d)ss key? [%s] ' % default_auth)
-    if len(auth) == 0:
-        auth = default_auth
-
-    if auth == 'r':
-        default_path = os.path.join(os.environ['HOME'], '.ssh', 'id_rsa')
-        path = input('RSA key [%s]: ' % default_path)
-        if len(path) == 0:
-            path = default_path
         try:
-            key = paramiko.RSAKey.from_private_key_file(path)
-        except paramiko.PasswordRequiredException:
-            password = getpass.getpass('RSA key password: ')
-            key = paramiko.RSAKey.from_private_key_file(path, password)
-        t.auth_publickey(username, key)
-    elif auth == 'd':
-        default_path = os.path.join(os.environ['HOME'], '.ssh', 'id_dsa')
-        path = input('DSS key [%s]: ' % default_path)
-        if len(path) == 0:
-            path = default_path
-        try:
-            key = paramiko.DSSKey.from_private_key_file(path)
-        except paramiko.PasswordRequiredException:
-            password = getpass.getpass('DSS key password: ')
-            key = paramiko.DSSKey.from_private_key_file(path, password)
-        t.auth_publickey(username, key)
-    else:
-        pw = getpass.getpass('Password for %s@%s: ' % (username, hostname))
-        t.auth_password(username, pw)
-
-
-# setup logging
-paramiko.util.log_to_file('demo.log')
-
-username = ''
-if len(sys.argv) > 1:
-    hostname = sys.argv[1]
-    if hostname.find('@') >= 0:
-        username, hostname = hostname.split('@')
-else:
-    hostname = input('Hostname: ')
-if len(hostname) == 0:
-    print('*** Hostname required.')
-    sys.exit(1)
-port = 22
-if hostname.find(':') >= 0:
-    hostname, portstr = hostname.split(':')
-    port = int(portstr)
-
-# now connect
-try:
-    sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    sock.connect((hostname, port))
-except Exception as e:
-    print('*** Connect failed: ' + str(e))
-    traceback.print_exc()
-    sys.exit(1)
-
-try:
-    t = paramiko.Transport(sock)
-    try:
-        t.start_client()
-    except paramiko.SSHException:
-        print('*** SSH negotiation failed.')
-        sys.exit(1)
-
-    try:
-        keys = paramiko.util.load_host_keys(os.path.expanduser('~/.ssh/known_hosts'))
-    except IOError:
-        try:
-            keys = paramiko.util.load_host_keys(os.path.expanduser('~/ssh/known_hosts'))
+            keys = paramiko.util.load_host_keys(os.path.expanduser('~/.ssh/known_hosts'))
         except IOError:
-            print('*** Unable to open host keys file')
-            keys = {}
+            try:
+                keys = paramiko.util.load_host_keys(os.path.expanduser('~/ssh/known_hosts'))
+            except IOError:
+                print('*** Unable to open host keys file')
+                keys = {}
 
-    # check server's host key -- this is important.
-    key = t.get_remote_server_key()
-    if hostname not in keys:
-        print('*** WARNING: Unknown host key!')
-    elif key.get_name() not in keys[hostname]:
-        print('*** WARNING: Unknown host key!')
-    elif keys[hostname][key.get_name()] != key:
-        print('*** WARNING: Host key has changed!!!')
-        sys.exit(1)
-    else:
-        print('*** Host key OK.')
+        # check server's host key -- this is important.
+        key = t.get_remote_server_key()
+        if hostname not in keys:
+            print('*** WARNING: Unknown host key!')
+        elif key.get_name() not in keys[hostname]:
+            print('*** WARNING: Unknown host key!')
+        elif keys[hostname][key.get_name()] != key:
+            print('*** WARNING: Host key has changed!!!')
+            sys.exit(1)
+        else:
+            print('*** Host key OK.')
 
-    # get username
-    if username == '':
-        default_username = getpass.getuser()
-        username = input('Username [%s]: ' % default_username)
-        if len(username) == 0:
-            username = default_username
+        if not t.is_authenticated():
+            manual_auth(t, username, hostname)
+        if not t.is_authenticated():
+            print('*** Authentication failed. :(')
+            t.close()
+            sys.exit(1)
 
-    agent_auth(t, username)
-    if not t.is_authenticated():
-        manual_auth(username, hostname)
-    if not t.is_authenticated():
-        print('*** Authentication failed. :(')
+        chan = t.open_session() # 打开一个会话
+        chan.get_pty()  # terminal 获取终端
+        chan.invoke_shell() # 调用终端
+
+        # user_obj 是 Django 提供的用户认证模块,user = models.OneToOneField(User)所以需要反向关联才能找到account.
+        # bind_host_user  是(HostUserBind表) 主机绑定用户中的 其中一条数据对象.
+        session_obj = models.SessionLog.objects.create(account=user_obj.account, host_user_bind=bind_host_user)
+        print('*** Here we go!\n')
+
+        # chan 是会话实例/session_obj 是 SessionLog表的对象
+        interactive.interactive_shell(chan, session_obj)
+        chan.close()
         t.close()
+
+    except Exception as e:
+        print('*** Caught exception: ' + str(e.__class__) + ': ' + str(e))
+        traceback.print_exc()
+        try:
+            t.close()
+        except:
+            pass
         sys.exit(1)
-
-    chan = t.open_session() # 打开一个会话
-    chan.get_pty()  # terminal 获取终端
-    chan.invoke_shell() # 调用终端
-    print('*** Here we go!\n')
-    interactive.interactive_shell(chan) # 传入会话实例
-    chan.close()
-    t.close()
-
-except Exception as e:
-    print('*** Caught exception: ' + str(e.__class__) + ': ' + str(e))
-    traceback.print_exc()
-    try:
-        t.close()
-    except:
-        pass
-    sys.exit(1)
 
 

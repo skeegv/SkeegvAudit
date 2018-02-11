@@ -1,8 +1,10 @@
 import getpass
 import subprocess
-from django.contrib.auth import authenticate
 from audit import models
 from django.conf import settings
+from audit.backend import ssh_interactive
+from django.contrib.auth import authenticate
+
 
 class UserShell(object):
     """Shell after the user login audit """
@@ -20,7 +22,7 @@ class UserShell(object):
             password = getpass.getpass("password: ").strip()
             user = authenticate(username=username, password=password)
             # None 代表不成功
-            # user object,认证对象,user.name
+            # user object,Django的认证对象,我们要拿到Account 里的name 需要 user.name
             if not user:
                 count += 1
                 print("Invalid username of password!")
@@ -51,6 +53,7 @@ class UserShell(object):
                             selected_group = host_group[choice]
                             host_bind_list = selected_group.host_user_binds.all()
                         elif choice == len(host_group):  # 选择的未分组机器
+                            # host_bind_list 是所有绑定主机和用户的记录
                             host_bind_list = self.user.account.host_user_binds.all()
                         if host_bind_list:
                             # 停留在主机层
@@ -62,9 +65,11 @@ class UserShell(object):
                                     if choice2.isdigit():
                                         choice2 = int(choice2)
                                         if choice2 >= 0 and choice2 < len(host_bind_list):
+                                            # selected_host 是(HostUserBind表) 主机绑定用户中的 其中一条数据对象
                                             selected_host = host_bind_list[choice2]
 
-                                            ssh_interactive.ssh_session(selected_host)
+                                            # 在 paramiko 基础上二次开发
+                                            ssh_interactive.ssh_session(selected_host, self.user)
 
                                             """
                                             # 自己写的登录 Shell 和 命令记录
