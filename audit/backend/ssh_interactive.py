@@ -25,7 +25,7 @@ def ssh_session(bind_host_user, user_obj):
 
     # bind_host_user 是HostUserBind 表对象(主机绑定用户中的 其中一条数据对象)
     hostname = bind_host_user.host.ip_addr
-    port = bind_host_user.host.host.port
+    port = bind_host_user.host.port
     username = bind_host_user.host_user.username
     password = bind_host_user.host_user.password
     # now connect
@@ -67,7 +67,7 @@ def ssh_session(bind_host_user, user_obj):
             print('*** Host key OK.')
 
         if not t.is_authenticated():
-            manual_auth(t, username, hostname)
+            manual_auth(t, username, password)
         if not t.is_authenticated():
             print('*** Authentication failed. :(')
             t.close()

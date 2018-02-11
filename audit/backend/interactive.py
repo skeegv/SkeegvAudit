@@ -27,6 +27,7 @@ from paramiko.py3compat import u
 try:
     import termios
     import tty
+
     has_termios = True
 except ImportError:
     has_termios = False
@@ -37,13 +38,13 @@ def interactive_shell(chan, session_obj):
     # 如果有终端
     if has_termios:
         # Unix 通用协议标准
-        posix_shell(chan,session_obj)
+        posix_shell(chan, session_obj)
     else:
         # Windows PowerShell
-        windows_shell(chan,session_obj)
+        windows_shell(chan, session_obj)
 
 
-def posix_shell(chan,session_obj):
+def posix_shell(chan, session_obj):
     import select  # select 用于检测文件句柄
 
     # sys.stdin(标准输入)、sys.stdout(标准输出)和sys.stderr(错误输出) 。
@@ -58,13 +59,13 @@ def posix_shell(chan,session_obj):
         # 用于命令拼接
         cmd = ''
         # 写入日志
-        f = open('ssh_audit.log','w')
+        f = open('ssh_audit.log', 'w')
         while True:
             r, w, e = select.select([chan, sys.stdin], [], [])
-            if chan in r: # 远程有返回命令结果
+            if chan in r:  # 远程有返回命令结果
                 try:
                     # 接收数据：使用recv(max) max参数表示一次最多接收的字节数
-                    x = u(chan.recv(1024)) #如果是字节就转换成万国码(如果是 str 那么还是返回 str)
+                    x = u(chan.recv(1024))  # 如果是字节就转换成万国码(如果是 str 那么还是返回 str)
 
                     # 如果x没有数据了,表示已经断开.
                     if len(x) == 0:
@@ -93,7 +94,7 @@ def posix_shell(chan,session_obj):
                     print('--->', cmd)
 
                     # 写入数据库
-                    models.AuditLog.objects.create(session=session_obj,cmd=cmd)
+                    models.AuditLog.objects.create(session=session_obj, cmd=cmd)
                     cmd = ''
                 else:
                     cmd += x
