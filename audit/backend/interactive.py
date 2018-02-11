@@ -50,6 +50,7 @@ def posix_shell(chan, session_obj):
     # sys.stdin(标准输入)、sys.stdout(标准输出)和sys.stderr(错误输出) 。
     oldtty = termios.tcgetattr(sys.stdin)
 
+
     try:
         # sys.stdin.fileno() 标准输入通常使用档案描述器0，标准输出是1，标准错误是2，进一步开启的档案则会是3、4、5等数字。对于档案物件，可以使用fileno（）方法来取得.
         tty.setraw(sys.stdin.fileno())
