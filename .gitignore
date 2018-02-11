@@ -1,1 +1,4 @@
 audit/migrations
+logs/
+.idea
+*/__pycache__

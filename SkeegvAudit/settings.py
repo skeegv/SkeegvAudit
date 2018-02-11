@@ -119,6 +119,13 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.10/howto/static-files/
 
+# 静态文件入口路径
 STATIC_URL = '/static/'
+
+# /static/下的静态路径
+STATICFILES_DIRS = (
+    os.path.join(BASE_DIR, 'statics'),
+)
+
 #  会话检测脚本#
 SESSION_TRACKER_SCRIPT = os.path.join(BASE_DIR,'audit/backend/session_tracker.sh')
