@@ -34,10 +34,6 @@ class UserShell(object):
         """start Interactive Program"""
 
         if self.auth():
-            print("self.user", self.user)
-            print("self.user_type", type(self.user))
-            print("self.user.password", self.user.password)
-            print("self.account.host_user_binds", self.user.account.host_user_binds.select_related())
             # print("self.account.host_user_binds",self.user.account.host_user_binds.all()) .select_related()等同于 .all()
             try:
                 # 显示 User 能访问的HostGroups
@@ -67,6 +63,11 @@ class UserShell(object):
                                         choice2 = int(choice2)
                                         if choice2 >= 0 and choice2 < len(host_bind_list):
                                             selected_host = host_bind_list[choice2]
+
+                                            ssh_interactive.ssh_session(selected_host)
+
+                                            """
+                                            # 自己写的登录 Shell 和 命令记录
                                             import string
                                             import random
                                             s = string.ascii_lowercase + string.digits
@@ -82,7 +83,7 @@ class UserShell(object):
                                             ssh_channel = subprocess.run(cmd, shell=True)
                                             # 读取结果
                                             print(session_tracker_obj.stdout.read(), session_tracker_obj.stderr.read())
-
+                                            """
                                     elif choice2 == 'b':
                                         break
             # 捕获 control + c (Crtl+c) 异常
