@@ -36,3 +36,7 @@ def acc_login(request):
 def acc_logout(request):
     logout(request)
     return redirect('/login/')
+
+
+def host_list(request):
+    return render(request, 'hostlist.html')
