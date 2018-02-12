@@ -2,14 +2,9 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="781b1c24-2369-4fde-8d76-c8ded215418a" name="Default" comment="">
+      <change type="MOVED" beforePath="$PROJECT_DIR$/.gitignore" afterPath="$PROJECT_DIR$/.gitignore.bak" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/db.sqlite3" afterPath="$PROJECT_DIR$/db.sqlite3" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/SkeegvAudit/settings.py" afterPath="$PROJECT_DIR$/SkeegvAudit/settings.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/SkeegvAudit/urls.py" afterPath="$PROJECT_DIR$/SkeegvAudit/urls.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/audit/models.py" afterPath="$PROJECT_DIR$/audit/models.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/audit/views.py" afterPath="$PROJECT_DIR$/audit/views.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/templates/hostlist.html" afterPath="$PROJECT_DIR$/templates/hostlist.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/templates/index.html" afterPath="$PROJECT_DIR$/templates/index.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/templates/login.html" afterPath="$PROJECT_DIR$/templates/login.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -71,7 +66,7 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="hostlist.html" pinned="false" current-in-tab="true">
+      <file leaf-file-name="hostlist.html" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/templates/hostlist.html">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="162">
@@ -79,6 +74,16 @@
               <folding>
                 <element signature="e#3345#3721#0#HTML" expanded="false" />
               </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name=".gitignore.bak" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/.gitignore.bak">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="0">
+              <caret line="0" column="0" lean-forward="true" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+              <folding />
             </state>
           </provider>
         </entry>
@@ -149,6 +154,7 @@
         <option value="$PROJECT_DIR$/audit/views.py" />
         <option value="$PROJECT_DIR$/audit/models.py" />
         <option value="$PROJECT_DIR$/templates/hostlist.html" />
+        <option value="$PROJECT_DIR$/.gitignore.bak" />
       </list>
     </option>
   </component>
@@ -159,6 +165,7 @@
     <sorting>DEFINITION_ORDER</sorting>
   </component>
   <component name="ProjectFrameBounds">
+    <option name="x" value="132" />
     <option name="y" value="23" />
     <option name="width" value="712" />
     <option name="height" value="877" />
@@ -353,10 +360,10 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="0" y="23" width="712" height="877" extended-state="0" />
+    <frame x="132" y="23" width="712" height="877" extended-state="0" />
     <editor active="true" />
     <layout>
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.21641791" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" x="274" y="70" width="206" height="780" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.21641791" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" x="274" y="70" width="206" height="780" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3295082" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
@@ -521,14 +528,6 @@
           <folding>
             <element signature="e#0#32#0" expanded="false" />
           </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/.gitignore">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="66">
-          <caret line="3" column="13" lean-forward="false" selection-start-line="3" selection-start-column="13" selection-end-line="3" selection-end-column="13" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -778,6 +777,14 @@
           <folding>
             <element signature="e#3345#3721#0#HTML" expanded="false" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/.gitignore.bak">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="true" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
         </state>
       </provider>
     </entry>
