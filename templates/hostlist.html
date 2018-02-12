@@ -107,7 +107,8 @@
     <!-- ==================================================================== -->
     <!-- END QUICK TIPS -->
     <script>
-        function GetToken(self,bind_host_id)(){
+        function GetToken(self,bind_host_id){
+            //解决 csrf_token 的问题,
             $.post("{% url 'get_token' %}",{'bind_host_id':bind_host_id,'csrfmiddlewaretoken':"{{csrf_token}}"},function(callback){
                 console.log(callback)
             });

@@ -104,3 +104,18 @@ class Account(models.Model):
         return self.name
 
 
+class Token(models.Model):
+    """主机 Token"""
+    host_user_bind = models.ForeignKey("HostUserBind")
+    val = models.CharField(verbose_name='Token', max_length=128,)
+    account = models.ForeignKey("Account")
+    expire = models.IntegerField("超时时间(s)", default=300)
+    date = models.DateTimeField("Token 生成时间", auto_now_add=True)
+
+    def __str__(self):
+        return "%s-%s" % (self.host_user_bind, self.val)
+
+    class Meta:
+        # 主要用于生成 token
+        unique_together = ('host_user_bind', 'val')
+

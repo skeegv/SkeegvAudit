@@ -410,23 +410,23 @@ host_user_id</ColNames>
       <NotNull>1</NotNull>
       <SequenceIdentity>1</SequenceIdentity>
     </column>
-    <column id="106" parent="16" name="start_dat">
+    <column id="106" parent="16" name="end_date">
       <Position>1</Position>
       <DataType>datetime|0</DataType>
+    </column>
+    <column id="107" parent="16" name="account_id">
+      <Position>2</Position>
+      <DataType>integer|0</DataType>
       <NotNull>1</NotNull>
     </column>
-    <column id="107" parent="16" name="end_date">
-      <Position>2</Position>
-      <DataType>datetime|0</DataType>
-    </column>
-    <column id="108" parent="16" name="account_id">
+    <column id="108" parent="16" name="host_user_bind_id">
       <Position>3</Position>
       <DataType>integer|0</DataType>
       <NotNull>1</NotNull>
     </column>
-    <column id="109" parent="16" name="host_user_bind_id">
+    <column id="109" parent="16" name="start_date">
       <Position>4</Position>
-      <DataType>integer|0</DataType>
+      <DataType>datetime|0</DataType>
       <NotNull>1</NotNull>
     </column>
     <index id="110" parent="16" name="audit_sessionlog_8a089c2a">

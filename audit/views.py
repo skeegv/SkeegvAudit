@@ -71,9 +71,15 @@ def get_host_list(request):
 
         return HttpResponse(data)
 
+
 #  获取 token
 @login_required
 def get_token(request):
     """生成 token 并返回"""
+
+    """
     print(request.POST)
-    return HttpResponse(...)
+    < QueryDict: {'bind_host_id': ['4'],'csrfmiddlewaretoken': ['QDmVoHtzYQq1TiL83Pv7JXlBl8dSvfJaxYrrLJbg2ZnPjd8WrbAvntBClSnxfmSl']} >
+    """
+    bind_host_id = request.POST.get('bind_host_id')
+    return HttpResponse('...')
