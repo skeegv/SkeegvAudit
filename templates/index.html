@@ -193,7 +193,8 @@
                                     <!--<img class="img-circle img-user media-object" src="img/av1.png" alt="Profile Picture">-->
                                     <i class="ti-face-smile ic-user"></i>
                                 </span>
-                                <div class="username hidden-xs">Chen BaoJia</div>
+{#                                只要一登录 request.user 就自动封装到整个请求会话里了.#}
+                                <div class="username hidden-xs">{{ request.user }}</div>
                             </a>
 
 
@@ -233,7 +234,7 @@
 
                                 <!-- Dropdown footer -->
                                 <div class="pad-all text-right">
-                                    <a href="pages-login.html" class="btn btn-primary">
+                                    <a href="/logout/" class="btn btn-primary">
                                         <i class="ti-unlock icon-fw"></i> Logout
                                     </a>
                                 </div>

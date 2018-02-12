@@ -18,12 +18,15 @@
 		                <h3 class="h4 mar-no">SkeegvAudit 堡垒机</h3>
 		                <p class="text-muted">Sign In to your account</p>
 		            </div>
-		            <form action="index.html">
+		            <form method="POST">
+                        {% csrf_token %}
 		                <div class="form-group">
-		                    <input type="text" class="form-control" placeholder="Username" autofocus>
+{#                            二次开发需要一个 name 参数方便发给后台#}
+		                    <input type="text" name="username" class="form-control" placeholder="Username" autofocus>
 		                </div>
 		                <div class="form-group">
-		                    <input type="password" class="form-control" placeholder="Password">
+{#                            二次开发需要一个 name 参数方便发给后台#}
+		                    <input type="password" name="password" class="form-control" placeholder="Password">
 		                </div>
 		                <button class="btn btn-primary btn-lg btn-block" type="submit">Sign In</button>
 		            </form>
