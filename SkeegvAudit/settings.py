@@ -127,5 +127,8 @@ STATICFILES_DIRS = (
     os.path.join(BASE_DIR, 'statics'),
 )
 
+# 配置全局 LOGIN 验证 跳转的 URL
+LOGIN_URL = '/login/'
+
 #  会话检测脚本#
 SESSION_TRACKER_SCRIPT = os.path.join(BASE_DIR,'audit/backend/session_tracker.sh')

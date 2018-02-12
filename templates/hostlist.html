@@ -38,11 +38,106 @@
     <!--Page content-->
     <!--===================================================-->
     <div id="page-content">
-        hostlist
-        {{ request.path }}
+        <div class="col-lg-3">
+            <!--Panel with Header-->
+            <!--===================================================-->
+            <div class="panel">
+                <div class="panel-heading">
+                    <h3 class="panel-title">主机组</h3>
+                </div>
+                <div class="panel-body">
+                    <div class="panel-body">
+                        <!--List Group with Badges-->
+                        <!--===================================================-->
+                        <!--{{ request.user.account.host_groups.all }}  {# 在前端从数据库取出数据 #}-->
+
+                        <ul class="list-group">
+                            {% for group in request.user.account.host_groups.all %}
+{#                              <li class="list-group-item"><span class="badge badge-primary">{{ group.host_user_binds.count }}</span>{{ group.name }}</li>#}
+                              <li class="list-group-item" onclick="GetHostlist({{ group.id }},this)"><span class="badge badge-success">{{ group.host_user_binds.count }}</span>{{ group.name }}</li>
+                            {% endfor %}
+                              <li class="list-group-item" onclick="GetHostlist(-1,this)"><span   class="badge badge-success">{{ request.user.account.host_user_binds.count }}</span>未分组主机</li>
+
+                        </ul>
+                        <!--===================================================-->
+
+                    </div>
+                </div>
+            </div>
+            <!--===================================================-->
+            <!--End Panel with Header-->
+
+        </div>
+        <div class="col-lg-9">
+            <!--Panel with Header-->
+            <!--===================================================-->
+            <div class="panel">
+                <div class="panel-heading">
+                    <h3 class="panel-title">主机列表</h3>
+                </div>
+                <div class="panel-body">
+                    <div class="panel-body">
+                        <div class="table-responsive">
+                            <table class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>Hostname</th>
+                                        <th>IP</th>
+                                        <th>Port</th>
+                                        <th>Username</th>
+                                        <th>IDC</th>
+                                        <th>Login</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="hostlist">
+                                    <tr>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!--===================================================-->
+            <!--End Panel with Header-->
+
+        </div>
     </div>
     <!-- ==================================================================== -->
     <!-- END QUICK TIPS -->
+    <script>
+        function GetHostlist(gid,self) {
+            $.get("{% url 'get_host_list' %}",{'gid':gid},
+                function (callback) {
 
+                    var data = JSON.parse(callback);
+                    console.log(data);
+
+                    var trs = '';
+                    $.each(data,function (index,i) {
+                        var tr = '<tr><td>' + i.host__hostname + "</td><td>" + i.host__ip_addr + "</td><td>" + i.host__port +
+                                "</td><td>" + i.host_user__username + "</td><td>" + i.host__idc__name + "</td><td>" + 'Login' + "</td>"
+                        trs += tr
+
+                    });
+                    {# 把字符串拼接完成之后的 trs 添加到列表中 #}
+                    $('#hostlist').html(trs)
+                });//end get
+
+            /*
+                 如果给定一个表示DOM 元素集合的jQuery 对象，
+                 .siblings() 方法允许我们在DOM 树中搜索这些元素的同胞元素，
+                 并用匹配元素构造一个新的jQuery 对象。
+             */
+            {# 点击按钮既高亮,并移除他的 siblings( 兄弟)的高亮  #}
+            $(self).addClass('active').siblings().removeClass('active');
+
+            {# 操作当前标签下的子标签 span 显示和隐藏#}
+            $(self).children('span').hide();
+            $(self).siblings().children('span').show();
+
+
+        }
+    </script>
 
 {% endblock %}

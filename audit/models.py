@@ -100,6 +100,7 @@ class Account(models.Model):
     host_user_binds = models.ManyToManyField('HostUserBind', blank=True)
     host_groups = models.ManyToManyField('HostGroup', blank=True)
 
-
+    def __str__(self):
+        return self.name
 
 
