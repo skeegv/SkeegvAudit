@@ -1,5 +1,5 @@
 {% extends 'index.html' %}
-
+{# 继承 index页面, index 是基础的框架模板 #}
 
 
 {#使用 block 会直接覆盖index Block 里的所有内容. #}
@@ -38,7 +38,7 @@
     <!--Page content-->
     <!--===================================================-->
     <div id="page-content">
-        <div class="col-lg-3">
+                <div class="col-lg-3">
             <!--Panel with Header-->
             <!--===================================================-->
             <div class="panel">
@@ -47,26 +47,27 @@
                 </div>
                 <div class="panel-body">
                     <div class="panel-body">
-                        <!--List Group with Badges-->
-                        <!--===================================================-->
-                        <!--{{ request.user.account.host_groups.all }}  {# 在前端从数据库取出数据 #}-->
+                        <div class="panel-body">
+                            <!--List Group with Badges-->
+                            <!--===================================================-->
+                            <!--{{ request.user.account.host_groups.all }}  {# 在前端从数据库取出数据 #}-->
 
-                        <ul class="list-group">
-                            {% for group in request.user.account.host_groups.all %}
-{#                              <li class="list-group-item"><span class="badge badge-primary">{{ group.host_user_binds.count }}</span>{{ group.name }}</li>#}
-                              <li class="list-group-item" onclick="GetHostlist({{ group.id }},this)"><span class="badge badge-success">{{ group.host_user_binds.count }}</span>{{ group.name }}</li>
-                            {% endfor %}
-                              <li class="list-group-item" onclick="GetHostlist(-1,this)"><span   class="badge badge-success">{{ request.user.account.host_user_binds.count }}</span>未分组主机</li>
+                            <ul class="list-group">
+                                {% for group in request.user.account.host_groups.all %}
+    {#                              <li class="list-group-item"><span class="badge badge-primary">{{ group.host_user_binds.count }}</span>{{ group.name }}</li>#}
+                                  <li class="list-group-item" onclick="GetHostlist({{ group.id }},this)"><span class="badge badge-success">{{ group.host_user_binds.count }}</span>{{ group.name }}</li>
+                                {% endfor %}
+                                  <li class="list-group-item" onclick="GetHostlist(-1,this)"><span   class="badge badge-success ">{{ request.user.account.host_user_binds.count }}</span>未分组主机</li>
 
-                        </ul>
-                        <!--===================================================-->
+                            </ul>
+                            <!--===================================================-->
+                    </div>
 
                     </div>
                 </div>
             </div>
             <!--===================================================-->
             <!--End Panel with Header-->
-
         </div>
         <div class="col-lg-9">
             <!--Panel with Header-->
@@ -106,6 +107,9 @@
     </div>
     <!-- ==================================================================== -->
     <!-- END QUICK TIPS -->
+
+    <!--Functions-->
+    <!--===================================================-->
     <script>
         function GetToken(self,bind_host_id){
             //解决 csrf_token 的问题,
@@ -144,9 +148,10 @@
             {# 操作当前标签下的子标签 span 显示和隐藏#}
             $(self).children('span').hide();
             $(self).siblings().children('span').show();
-
-
         }
     </script>
+    <!--===================================================-->
+    <!-- End Functions-->
+
 
 {% endblock %}

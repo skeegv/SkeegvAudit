@@ -131,3 +131,9 @@ def get_token(request):
                 return HttpResponse(json.dumps(token_data))
 
     return HttpResponse(json.dumps(token_data))
+
+
+# multitask 多任务
+@login_required
+def multi_cmd(request):
+    return render(request,'multi_cmd.html')

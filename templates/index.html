@@ -1,6 +1,8 @@
 {% extends 'base.html' %}
-
+{# index.html 页面 继承 base 页面,其他页面都继承 Index页面 #}
 {% block body %}
+    <!--CONTAINER-->
+    <!--===================================================-->
     <div id="container" class="effect mainnav-lg .boxed-layout">
 
         <!--NAVBAR 左边导航栏-->
@@ -381,7 +383,7 @@
 
 						                <!--Submenu-->
 						                <ul class="collapse">
-						                    <li><a href="#">批量命令</a></li>
+						                    <li><a href="{% url 'multi_cmd' %}">批量命令</a></li>
 											<li><a href="#">批量文件</a></li>
 						                </ul>
 						            </li>
@@ -603,7 +605,7 @@
             <!--===================================================-->
             <!--END ASIDE-->
 
-        </div>
+
 
 
 
@@ -634,28 +636,24 @@
             <p class="pad-lft">&#0169; 2018 Skeegv Group</p>
 
 
-
-        </footer>
-        <!--===================================================-->
-        <!-- END FOOTER -->
-
-
-        <!-- SCROLL PAGE BUTTON -->
-        <!--===================================================-->
-        <button class="scroll-top btn">
-            <i class="pci-chevron chevron-up"></i>
-        </button>
-        <!--===================================================-->
+            </footer>
+            <!--===================================================-->
+            <!-- END FOOTER -->
 
 
-
-    </div>
+            <!-- SCROLL PAGE BUTTON -->
+            <!--===================================================-->
+            <button class="scroll-top btn">
+                <i class="pci-chevron chevron-up"></i>
+            </button>
+            <!--===================================================-->
+        </div>
     <!--===================================================-->
     <!-- END OF CONTAINER -->
 
-
+    <!--Script-->
+    <!--===================================================-->
     <script>
-
     /*
         //等文档树构建完毕再执行.页面点击后自动高亮.
         $(document).ready(function () {
@@ -666,7 +664,7 @@
 
     */
     $("#mainnav-menu a[href='{{ request.path }}']").parent().addClass('active-link')
-
 </script>
-    
+    <!--===================================================-->
+    <!-- End Script-->
 {% endblock %}

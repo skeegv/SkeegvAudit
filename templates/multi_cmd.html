@@ -1,0 +1,176 @@
+{% extends 'index.html' %}
+{# 继承 index页面, index 是基础的框架模板 #}
+
+
+{#使用 block 会直接覆盖index Block 里的所有内容. #}
+{% block content-container %}
+
+    <!--Page Title-->
+    <!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+    <div id="page-title">
+        <h1 class="page-header text-overflow">批量命令</h1>
+
+        <!--Searchbox-->
+        <div class="searchbox">
+            <div class="input-group custom-search-form">
+                <input type="text" class="form-control" placeholder="Search..">
+                <span class="input-group-btn">
+                    <button class="text-muted" type="button"><i class="ti-search"></i></button>
+                </span>
+            </div>
+        </div>
+    </div>
+    <!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+    <!--End page title-->
+
+
+    <!--Breadcrumb-->
+    <!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+    <ol class="breadcrumb">
+        <li><a href="#">Home</a></li>
+        <li><a href="#">Library</a></li>
+        <li class="active">主机列表</li>
+    </ol>
+    <!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+    <!--End breadcrumb-->
+
+
+    <!--Page content-->
+    <!--===================================================-->
+    <div id="page-content">
+        <div class="col-lg-4">
+            <!--Panel with Header-->
+            <!--===================================================-->
+            <div class="panel">
+                <div class="panel-heading">
+                    <h3 class="panel-title">主机组 <span class="pull-right">已选主机: <span id="selected_hosts">0</span></span>
+                    </h3>
+                </div>
+                <div class="panel-body">
+                    <div class="panel-body">
+                        <div class="panel-body">
+                            <!--List Group with Badges-->
+                            <!--===================================================-->
+                            <!--{{ request.user.account.host_groups.all }}  {# 在前端从数据库取出数据 #}-->
+
+                            <ul class="list-group" id="host_groups">
+                                {% for group in request.user.account.host_groups.all %}
+                                    <li class="list-group-item">
+                                        <span class="badge badge-success">{{ group.host_user_binds.count }}</span>
+                                        <input type="checkbox" onclick="CheckAll(this)">
+                                        <a class="label label-info" onclick="DisplayHostList(this)">{{ group.name }}</a>
+                                        <ul class="hide">
+                                            {# 取出组里的所有主机 #}
+                                            {% for bind_host in group.host_user_binds.all %}
+                                                <li onclick="ShowCheckedHostCount()"><input type="checkbox"
+                                                                                            value="{{ bind_host.id }}"> {{ bind_host.host.hostname }}: {{ bind_host.host.ip_addr }}-{{ bind_host.host_user.username }}
+                                                </li>
+                                            {% endfor %}
+                                        </ul>
+                                    </li>
+                                {% endfor %}
+                                <li class="list-group-item">
+                                    <span class="badge badge-success">{{ request.user.account.host_user_binds.count }}</span>
+                                    <input type="checkbox" onclick="CheckAll(this)">
+                                    <a class="label label-purple" onclick="DisplayHostList(this)">未分组主机</a>
+                                    <ul class="hide">
+                                        {# 取出组里的所有主机 #}
+                                        {% for bind_host in request.user.account.host_user_binds.all %}
+                                            <li onclick="ShowCheckedHostCount()"><input type="checkbox"
+                                                                                        value="{{ bind_host.id }}"> {{ bind_host.host.hostname }}: {{ bind_host.host.ip_addr }}-{{ bind_host.host_user.username }}
+                                            </li>
+                                        {% endfor %}
+                                    </ul>
+                                </li>
+                            </ul>
+                            <!--===================================================-->
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+            <!--===================================================-->
+            <!--End Panel with Header-->
+        </div>
+        <div class="col-lg-8">
+            <div class="col-lg-12">
+                <!--Panel with Header-->
+                <!--===================================================-->
+                <div class="panel">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">执行命令</h3>
+                    </div>
+                    <div class="panel-body">
+                        <div class="panel-body">
+                            <textarea id="cmd" class=" form-control"></textarea>
+                            <button onclick="PostTask('cmd')" class="btn btn-purple pull-right">终止</button>
+                            <button class="btn btn-info  pull-right">执行</button>
+                        </div>
+                    </div>
+                </div>
+                <!--===================================================-->
+                <!--End Panel with Header-->
+            </div>
+            <div class="col-lg-12">
+                <!--Panel with Header-->
+                <!--===================================================-->
+                <div class="panel">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">执行结果</h3>
+                    </div>
+                    <div class="panel-body">
+                        <div class="panel-body">
+                            body
+                        </div>
+                    </div>
+                </div>
+                <!--===================================================-->
+                <!--End Panel with Header-->
+            </div>
+        </div>
+    </div>
+    </div>
+
+    <!--Functions-->
+    <!--===================================================-->
+    <script>
+
+        {# 显示或隐藏当前主机 #}
+
+        function DisplayHostList(self) {
+            // toggleClass() 对设置或移除被选元素的一个或多个类进行切换.该方法检查每个元素中指定的类。如果不存在则添加类，如果已设置则删除之。这就是所谓的切换效果。
+            $(self).next().toggleClass('hide')
+        }
+
+        {# 全选按钮 #}
+
+        function CheckAll(self) {
+            // 设置全选,如果 self 当前标签prop(checked) 为true(选中)那么他父亲下的 ul下的 checkbox 都为 true, 反之亦然.
+            // prop() 方法设置或返回被选元素的属性和值
+            ($(self).parent().find("ul :checkbox").prop('checked', $(self).prop('checked')))
+            ShowCheckedHostCount()
+
+        }
+
+        {# 计算当前选中的主机数 #}
+
+        function ShowCheckedHostCount() {
+            // 计算所有被选中的 checkbox
+            var selected_host_count = $("#host_groups ul").find(":checked").length;
+            console.log(selected_host_count);
+            $("#selected_hosts").text(selected_host_count)
+        }
+
+        {# 批量执行命令 或 上传文件 #}
+
+        function PostTask(task_type) {
+            //1.验证主机列表已选,命令已输入
+            //2.提交任务到后台
+
+        }
+
+    </script>
+    <!--===================================================-->
+    <!-- End Functions-->
+
+{% endblock %}
