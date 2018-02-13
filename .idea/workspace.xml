@@ -3,11 +3,8 @@
   <component name="ChangeListManager">
     <list default="true" id="781b1c24-2369-4fde-8d76-c8ded215418a" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/db.sqlite3" afterPath="$PROJECT_DIR$/db.sqlite3" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/audit/admin.py" afterPath="$PROJECT_DIR$/audit/admin.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/audit/backend/user_interactive.py" afterPath="$PROJECT_DIR$/audit/backend/user_interactive.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/audit/models.py" afterPath="$PROJECT_DIR$/audit/models.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/audit/views.py" afterPath="$PROJECT_DIR$/audit/views.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/templates/hostlist.html" afterPath="$PROJECT_DIR$/templates/hostlist.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/SkeegvAudit.iml" afterPath="$PROJECT_DIR$/.idea/SkeegvAudit.iml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -48,7 +45,7 @@
       <file leaf-file-name="urls.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/SkeegvAudit/urls.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="299">
+            <state relative-caret-position="550">
               <caret line="25" column="23" lean-forward="false" selection-start-line="25" selection-start-column="23" selection-end-line="25" selection-end-column="23" />
               <folding>
                 <element signature="e#645#677#0" expanded="true" />
@@ -60,7 +57,7 @@
       <file leaf-file-name="views.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/audit/views.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="167">
+            <state relative-caret-position="2750">
               <caret line="125" column="46" lean-forward="false" selection-start-line="125" selection-start-column="46" selection-end-line="125" selection-end-column="46" />
               <folding>
                 <element signature="e#0#11#0" expanded="true" />
@@ -72,7 +69,7 @@
       <file leaf-file-name="models.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/audit/models.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="254">
+            <state relative-caret-position="2310">
               <caret line="106" column="11" lean-forward="false" selection-start-line="106" selection-start-column="6" selection-end-line="106" selection-end-column="11" />
               <folding />
             </state>
@@ -82,28 +79,28 @@
       <file leaf-file-name="admin.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/audit/admin.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="278">
-              <caret line="23" column="31" lean-forward="true" selection-start-line="23" selection-start-column="31" selection-end-line="23" selection-end-column="31" />
+            <state relative-caret-position="484">
+              <caret line="23" column="31" lean-forward="false" selection-start-line="23" selection-start-column="31" selection-end-line="23" selection-end-column="31" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="hostlist.html" pinned="false" current-in-tab="false">
+      <file leaf-file-name="hostlist.html" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/templates/hostlist.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="293">
+            <state relative-caret-position="-47">
               <caret line="113" column="0" lean-forward="false" selection-start-line="113" selection-start-column="0" selection-end-line="113" selection-end-column="0" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="user_interactive.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="user_interactive.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/audit/backend/user_interactive.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="337">
-              <caret line="50" column="0" lean-forward="true" selection-start-line="50" selection-start-column="0" selection-end-line="50" selection-end-column="0" />
+            <state relative-caret-position="126">
+              <caret line="84" column="28" lean-forward="false" selection-start-line="84" selection-start-column="28" selection-end-line="84" selection-end-column="28" />
               <folding>
                 <element signature="e#0#14#0" expanded="true" />
               </folding>
@@ -114,7 +111,7 @@
       <file leaf-file-name="ssh_interactive.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/audit/backend/ssh_interactive.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1117">
+            <state relative-caret-position="1782">
               <caret line="93" column="16" lean-forward="false" selection-start-line="93" selection-start-column="16" selection-end-line="93" selection-end-column="16" />
               <folding />
             </state>
@@ -228,6 +225,21 @@
               <item name="SkeegvAudit" type="462c0819:PsiDirectoryNode" />
               <item name="audit" type="462c0819:PsiDirectoryNode" />
               <item name="backend" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="SkeegvAudit" type="b2602c69:ProjectViewProjectNode" />
+              <item name="SkeegvAudit" type="462c0819:PsiDirectoryNode" />
+              <item name="audit" type="462c0819:PsiDirectoryNode" />
+              <item name="backend" type="462c0819:PsiDirectoryNode" />
+              <item name="user_interactive.py" type="8704e2dd:PyFileNode" />
+            </path>
+            <path>
+              <item name="SkeegvAudit" type="b2602c69:ProjectViewProjectNode" />
+              <item name="SkeegvAudit" type="462c0819:PsiDirectoryNode" />
+              <item name="audit" type="462c0819:PsiDirectoryNode" />
+              <item name="backend" type="462c0819:PsiDirectoryNode" />
+              <item name="user_interactive.py" type="8704e2dd:PyFileNode" />
+              <item name="UserShell" type="dd8bbb05:PyElementNode" />
             </path>
             <path>
               <item name="SkeegvAudit" type="b2602c69:ProjectViewProjectNode" />
@@ -404,17 +416,17 @@
     <frame x="0" y="23" width="712" height="877" extended-state="0" />
     <editor active="true" />
     <layout>
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.21641791" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" x="274" y="70" width="206" height="780" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.22238806" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" x="274" y="70" width="206" height="780" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3283582" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.3286445" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
       <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.3286445" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32480818" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
-      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.39897698" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.39897698" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Data View" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3283582" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
@@ -463,143 +475,35 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="312">
           <caret line="57" column="17" lean-forward="false" selection-start-line="57" selection-start-column="17" selection-end-line="57" selection-end-column="17" />
-          <folding>
-            <element signature="e#817#830#0" expanded="false" />
-          </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/statics/plugins/pace/pace.min.css">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/statics/plugins/gmaps/gmaps.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/statics/plugins/chosen/chosen.min.css">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/statics/plugins/chosen/chosen.jquery.min.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/statics/plugins/jstree/themes/default/32px.png">
-      <provider selected="true" editor-type-id="images">
-        <state />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/statics/plugins/jstree/themes/default/40px.png">
-      <provider selected="true" editor-type-id="images">
-        <state />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/statics/plugins/jstree/themes/default/throbber.gif">
-      <provider selected="true" editor-type-id="images">
-        <state />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/statics/plugins/jstree/jstree.min.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/statics/plugins/pace/pace.min.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/statics/plugins/jstree/themes/default/style.min.css">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/statics/plugins/premium/icon-sets/thumbs/line-icons/ui.png">
-      <provider selected="true" editor-type-id="images">
-        <state />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/statics/plugins/premium/icon-sets/thumbs/line-icons/seo.png">
-      <provider selected="true" editor-type-id="images">
-        <state />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/statics/plugins/premium/icon-sets/thumbs/line-icons/body.png">
-      <provider selected="true" editor-type-id="images">
-        <state />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/statics/plugins/premium/icon-sets/thumbs/line-icons/food.png">
-      <provider selected="true" editor-type-id="images">
-        <state />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/statics/plugins/premium/icon-sets/thumbs/line-icons/maps.png">
-      <provider selected="true" editor-type-id="images">
-        <state />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/statics/plugins/premium/icon-sets/thumbs/line-icons/text.png">
-      <provider selected="true" editor-type-id="images">
-        <state />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/statics/plugins/premium/icon-sets/thumbs/line-icons/time.png">
-      <provider selected="true" editor-type-id="images">
-        <state />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/statics/plugins/premium/icon-sets/thumbs/line-icons/chess.png">
-      <provider selected="true" editor-type-id="images">
-        <state />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/statics/plugins/premium/icon-sets/thumbs/line-icons/files.png">
-      <provider selected="true" editor-type-id="images">
-        <state />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/statics/plugins/premium/icon-sets/thumbs/line-icons/flags.png">
-      <provider selected="true" editor-type-id="images">
-        <state />
-      </provider>
-    </entry>
+    <entry file="file://$PROJECT_DIR$/statics/plugins/pace/pace.min.css" />
+    <entry file="file://$PROJECT_DIR$/statics/plugins/gmaps/gmaps.js" />
+    <entry file="file://$PROJECT_DIR$/statics/plugins/chosen/chosen.min.css" />
+    <entry file="file://$PROJECT_DIR$/statics/plugins/chosen/chosen.jquery.min.js" />
+    <entry file="file://$PROJECT_DIR$/statics/plugins/jstree/themes/default/32px.png" />
+    <entry file="file://$PROJECT_DIR$/statics/plugins/jstree/themes/default/40px.png" />
+    <entry file="file://$PROJECT_DIR$/statics/plugins/jstree/themes/default/throbber.gif" />
+    <entry file="file://$PROJECT_DIR$/statics/plugins/jstree/jstree.min.js" />
+    <entry file="file://$PROJECT_DIR$/statics/plugins/pace/pace.min.js" />
+    <entry file="file://$PROJECT_DIR$/statics/plugins/jstree/themes/default/style.min.css" />
+    <entry file="file://$PROJECT_DIR$/statics/plugins/premium/icon-sets/thumbs/line-icons/ui.png" />
+    <entry file="file://$PROJECT_DIR$/statics/plugins/premium/icon-sets/thumbs/line-icons/seo.png" />
+    <entry file="file://$PROJECT_DIR$/statics/plugins/premium/icon-sets/thumbs/line-icons/body.png" />
+    <entry file="file://$PROJECT_DIR$/statics/plugins/premium/icon-sets/thumbs/line-icons/food.png" />
+    <entry file="file://$PROJECT_DIR$/statics/plugins/premium/icon-sets/thumbs/line-icons/maps.png" />
+    <entry file="file://$PROJECT_DIR$/statics/plugins/premium/icon-sets/thumbs/line-icons/text.png" />
+    <entry file="file://$PROJECT_DIR$/statics/plugins/premium/icon-sets/thumbs/line-icons/time.png" />
+    <entry file="file://$PROJECT_DIR$/statics/plugins/premium/icon-sets/thumbs/line-icons/chess.png" />
+    <entry file="file://$PROJECT_DIR$/statics/plugins/premium/icon-sets/thumbs/line-icons/files.png" />
+    <entry file="file://$PROJECT_DIR$/statics/plugins/premium/icon-sets/thumbs/line-icons/flags.png" />
     <entry file="file://$PROJECT_DIR$/statics/img/profile-photos/skeegv_head_portrait.jpg">
       <provider selected="true" editor-type-id="images">
         <state />
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/statics/img/flags/skeegv_log.png">
-      <provider selected="true" editor-type-id="images">
-        <state />
-      </provider>
-    </entry>
+    <entry file="file://$PROJECT_DIR$/statics/img/flags/skeegv_log.png" />
     <entry file="file://$PROJECT_DIR$/statics/img/bg.jpg">
       <provider selected="true" editor-type-id="images">
         <state />
@@ -634,7 +538,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="-27">
           <caret line="39" column="4" lean-forward="false" selection-start-line="39" selection-start-column="4" selection-end-line="39" selection-end-column="4" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -650,7 +553,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="66">
           <caret line="3" column="13" lean-forward="false" selection-start-line="3" selection-start-column="13" selection-end-line="3" selection-end-column="13" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -658,7 +560,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="237">
           <caret line="20" column="38" lean-forward="false" selection-start-line="20" selection-start-column="38" selection-end-line="20" selection-end-column="38" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -666,7 +567,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="233">
           <caret line="69" column="20" lean-forward="false" selection-start-line="69" selection-start-column="20" selection-end-line="69" selection-end-column="20" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -674,47 +574,17 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="161">
           <caret line="635" column="0" lean-forward="false" selection-start-line="635" selection-start-column="0" selection-end-line="635" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/audit/migrations/0004_auto_20180211_0518.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/audit/migrations/0002_auto_20180209_0433.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/audit/migrations/0002_auto_20180211_0231.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/audit/migrations/0003_auto_20180211_0233.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
+    <entry file="file://$PROJECT_DIR$/audit/migrations/0004_auto_20180211_0518.py" />
+    <entry file="file://$PROJECT_DIR$/audit/migrations/0002_auto_20180209_0433.py" />
+    <entry file="file://$PROJECT_DIR$/audit/migrations/0002_auto_20180211_0231.py" />
+    <entry file="file://$PROJECT_DIR$/audit/migrations/0003_auto_20180211_0233.py" />
     <entry file="file://$PROJECT_DIR$/audit/migrations/0001_initial.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -722,7 +592,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -730,7 +599,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -752,17 +620,9 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/templates/hostlist.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="293">
-          <caret line="113" column="0" lean-forward="false" selection-start-line="113" selection-start-column="0" selection-end-line="113" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/SkeegvAudit/urls.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="299">
+        <state relative-caret-position="550">
           <caret line="25" column="23" lean-forward="false" selection-start-line="25" selection-start-column="23" selection-end-line="25" selection-end-column="23" />
           <folding>
             <element signature="e#645#677#0" expanded="true" />
@@ -772,7 +632,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/audit/models.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="254">
+        <state relative-caret-position="2310">
           <caret line="106" column="11" lean-forward="false" selection-start-line="106" selection-start-column="6" selection-end-line="106" selection-end-column="11" />
           <folding />
         </state>
@@ -780,15 +640,15 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/audit/admin.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="278">
-          <caret line="23" column="31" lean-forward="true" selection-start-line="23" selection-start-column="31" selection-end-line="23" selection-end-column="31" />
+        <state relative-caret-position="484">
+          <caret line="23" column="31" lean-forward="false" selection-start-line="23" selection-start-column="31" selection-end-line="23" selection-end-column="31" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/audit/views.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="167">
+        <state relative-caret-position="2750">
           <caret line="125" column="46" lean-forward="false" selection-start-line="125" selection-start-column="46" selection-end-line="125" selection-end-column="46" />
           <folding>
             <element signature="e#0#11#0" expanded="true" />
@@ -798,7 +658,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/audit/backend/ssh_interactive.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1117">
+        <state relative-caret-position="1782">
           <caret line="93" column="16" lean-forward="false" selection-start-line="93" selection-start-column="16" selection-end-line="93" selection-end-column="16" />
           <folding />
         </state>
@@ -806,11 +666,19 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/audit/backend/user_interactive.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="337">
-          <caret line="50" column="0" lean-forward="true" selection-start-line="50" selection-start-column="0" selection-end-line="50" selection-end-column="0" />
+        <state relative-caret-position="126">
+          <caret line="84" column="28" lean-forward="false" selection-start-line="84" selection-start-column="28" selection-end-line="84" selection-end-column="28" />
           <folding>
             <element signature="e#0#14#0" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/templates/hostlist.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-47">
+          <caret line="113" column="0" lean-forward="false" selection-start-line="113" selection-start-column="0" selection-end-line="113" selection-end-column="0" />
+          <folding />
         </state>
       </provider>
     </entry>
