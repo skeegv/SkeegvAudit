@@ -107,7 +107,8 @@ class Account(models.Model):
 class Token(models.Model):
     """主机 Token"""
     host_user_bind = models.ForeignKey("HostUserBind")
-    val = models.CharField(verbose_name='Token', max_length=128,)
+    # 只必须是唯一,因为在5分钟之内可能会有2个用户生成同样的
+    val = models.CharField(verbose_name='Token', max_length=128,unique=True)
     account = models.ForeignKey("Account")
     expire = models.IntegerField("超时时间(s)", default=300)
     date = models.DateTimeField("Token 生成时间", auto_now_add=True)
@@ -115,7 +116,7 @@ class Token(models.Model):
     def __str__(self):
         return "%s-%s" % (self.host_user_bind, self.val)
 
-    class Meta:
-        # 主要用于生成 token
-        unique_together = ('host_user_bind', 'val')
-
+    """
+    这里需要再写一个脚本用于每天清除超时,也就是超过5分钟的记录.不然
+    数据库会越来越大.会越来越不好维护.因为 val( 既 token )是唯一的.
+    """

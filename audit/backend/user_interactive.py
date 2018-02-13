@@ -1,4 +1,5 @@
 import getpass
+import datetime
 import subprocess
 from audit import models
 from django.conf import settings
@@ -27,13 +28,51 @@ class UserShell(object):
                 count += 1
                 print("Invalid username of password!")
             else:
+                # 把 Django 的  user 对象 赋值给 self.user
                 self.user = user
                 return True
         else:
             print("too many attempts.")
 
+    def token_auth(self):
+        count = 0
+        while count < 3:
+            user_input = input("Input your access token,press Enter if doesn't have: ")
+            # token 的位数的8位
+            if len(user_input) == 0:
+                return
+            if len(user_input) != 8:
+                print('token length is 8')
+            else:
+                # 获取当前时间 - 300 秒(既5分钟) 做超时时间的验证
+                time_obj = datetime.datetime.now() - datetime.timedelta(seconds=300)
+                # token_obj 可能会取到多个(几乎不可能,因为在写入数据库的时候已经限制了必须是唯一的),我们要取的是5分钟之内最新的才算是合法的 token
+                token_obj = models.Token.objects.filter(val=user_input, date__gt=time_obj).first()
+
+                if token_obj:
+                    if token_obj.val == user_input:  # 表示口令对上了
+                        # 将要登录的主机对象返回
+                        return token_obj
+
+            count += 1
+
     def start(self):
         """start Interactive Program"""
+
+        token_obj = self.token_auth()
+        if token_obj:
+            """
+            在 paramiko 基础上二次开发
+            把 Django 的  user 对象 赋值给 self.user.要拿到Account 里的name 需要 user.name
+            因为 django 的 user 关联  account 表
+            selected_host 是主机对象,既用于登录那一台主机所需要的信息
+            self.user 主要用于日志的记录
+            """
+            # self.user 是 Django 认证成功之后的对象.
+            self.user = token_obj.account.user
+            ssh_interactive.ssh_session(token_obj, self.user)
+            # 不需要往下走了,退出程序即可
+            exit()
 
         if self.auth():
             # print("self.account.host_user_binds",self.user.account.host_user_binds.all()) .select_related()等同于 .all()
@@ -70,7 +109,13 @@ class UserShell(object):
                                     if choice2 >= 0 and choice2 < len(host_bind_list):
                                         # selected_host 是(HostUserBind表) 主机绑定用户中的 其中一条数据对象
                                         selected_host = host_bind_list[choice2]
-                                        # 在 paramiko 基础上二次开发
+                                        """
+                                        在 paramiko 基础上二次开发
+                                        把 Django 的  user 对象 赋值给 self.user.要拿到Account 里的name 需要 user.name
+                                        因为 django 的 user 关联  account 表
+                                        selected_host 是主机对象,既用于登录那一台主机所需要的信息
+                                        self.user 主要用于日志的记录
+                                        """
                                         ssh_interactive.ssh_session(selected_host, self.user)
                                     elif choice2 == 'b':
                                         break

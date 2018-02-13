@@ -1,7 +1,10 @@
 import json
+import random, string
+import datetime
 from django.shortcuts import render, redirect, HttpResponse
 from django.contrib.auth import authenticate, login, logout  # 用于用户检测,用户登录,退出
 from django.contrib.auth.decorators import login_required  # 用于检测用户是否已登录
+from audit import models
 
 
 # 首页
@@ -49,7 +52,6 @@ def acc_logout(request):
 # 主机列表页
 @login_required
 def host_list(request):
-
     return render(request, 'hostlist.html')
 
 
@@ -72,7 +74,7 @@ def get_host_list(request):
         return HttpResponse(data)
 
 
-#  获取 token
+# 获取 token
 @login_required
 def get_token(request):
     """生成 token 并返回"""
@@ -82,4 +84,50 @@ def get_token(request):
     < QueryDict: {'bind_host_id': ['4'],'csrfmiddlewaretoken': ['QDmVoHtzYQq1TiL83Pv7JXlBl8dSvfJaxYrrLJbg2ZnPjd8WrbAvntBClSnxfmSl']} >
     """
     bind_host_id = request.POST.get('bind_host_id')
-    return HttpResponse('...')
+
+    # 当前时间 -300秒(既5分钟)
+    time_obj = datetime.datetime.now() - datetime.timedelta(seconds=300)
+
+    # 查询当前 DJango 登录用户是否在5分种之内已经生成,如果是(那么继续返回已经生的那个)
+    exist_token_obj = models.Token.objects.filter(account_id=request.user.account.id,
+                                                  host_user_bind=bind_host_id,
+                                                  date__gt=time_obj)    # __gt 大于
+
+    if exist_token_obj: #has token already
+        """
+        print(exist_token_obj[0].expire)
+        300
+        
+        print(exist_token_obj[0].id)
+        18
+        
+        print(exist_token_obj[0].host_user_bind)
+        Slave-10.0.0.5-ssh-password-root-123456
+
+        print(exist_token_obj[0].val)
+        oa4bf75k
+
+        print(exist_token_obj.values())
+        <QuerySet [{'id': 18, 'host_user_bind_id': 1, 'val': 'oa4bf75k', 'account_id': 1, 'expire': 300, 'date': datetime.datetime(2018, 2, 13, 2, 2, 47, 24882, tzinfo=<UTC>)}]>
+        """
+        token_data = {'token': exist_token_obj[0].val}
+    else:
+        # 验证生成的随机token是否已经存在于数据库
+        while True:
+            # 生成8位随机token
+            token_val = ''.join((random.sample(string.ascii_lowercase + string.digits, 8)))
+            # 对比数据库中是否已经有一样的 token
+            token = models.Token.objects.filter(val=token_val)
+            # 如果没有既使用当前生成的 token 进行创建            print('end 数据库里已存在')
+            if not token:
+
+                token_obj = models.Token.objects.create(
+                    host_user_bind_id=bind_host_id,
+                    account=request.user.account,
+                    val=token_val,
+                )
+                token_data = {'token': token_val}
+
+                return HttpResponse(json.dumps(token_data))
+
+    return HttpResponse(json.dumps(token_data))

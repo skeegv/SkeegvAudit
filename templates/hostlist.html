@@ -110,13 +110,16 @@
         function GetToken(self,bind_host_id){
             //解决 csrf_token 的问题,
             $.post("{% url 'get_token' %}",{'bind_host_id':bind_host_id,'csrfmiddlewaretoken':"{{csrf_token}}"},function(callback){
-                console.log(callback)
+                //JSON.parse() 方法用来解析JSON字符串，构造由字符串描述的JavaScript值或对象.
+                var data = JSON.parse(callback);
+                //next() 获得匹配元素集合中每个元素紧邻的同胞元素。如果提供选择器，则取回匹配该选择器的下一个同胞元素。
+                $(self).parent().next().text(data.token);
             });
         }
         function GetHostlist(gid,self) {
             $.get("{% url 'get_host_list' %}",{'gid':gid},
                 function (callback) {
-
+                    //JSON.parse() 方法用来解析JSON字符串，构造由字符串描述的JavaScript值或对象.
                     var data = JSON.parse(callback);
                     console.log(data);
 
