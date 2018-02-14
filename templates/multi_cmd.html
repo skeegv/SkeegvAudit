@@ -103,8 +103,11 @@
                     <div class="panel-body">
                         <div class="panel-body">
                             <textarea id="cmd" class=" form-control"></textarea>
-                            <button onclick="PostTask('cmd')" class="btn btn-purple pull-right">终止</button>
-                            <button class="btn btn-info  pull-right">执行</button>
+                            <button class="btn btn-purple pull-right">终止</button>
+
+                            <button onclick="PostTask('cmd')" id="demo-bootbox-alert" class="btn btn-info  pull-right">
+                                执行
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -131,7 +134,8 @@
     </div>
     </div>
 
-    <!--Functions-->
+
+    <!--JavaScript-->
     <!--===================================================-->
     <script>
 
@@ -147,7 +151,7 @@
         function CheckAll(self) {
             // 设置全选,如果 self 当前标签prop(checked) 为true(选中)那么他父亲下的 ul下的 checkbox 都为 true, 反之亦然.
             // prop() 方法设置或返回被选元素的属性和值
-            ($(self).parent().find("ul :checkbox").prop('checked', $(self).prop('checked')))
+            ($(self).parent().find("ul :checkbox").prop('checked', $(self).prop('checked')));
             ShowCheckedHostCount()
 
         }
@@ -157,7 +161,6 @@
         function ShowCheckedHostCount() {
             // 计算所有被选中的 checkbox
             var selected_host_count = $("#host_groups ul").find(":checked").length;
-            console.log(selected_host_count);
             $("#selected_hosts").text(selected_host_count)
         }
 
@@ -167,10 +170,69 @@
             //1.验证主机列表已选,命令已输入
             //2.提交任务到后台
 
+            // 找到所有被选中的 checkbox
+            var selected_host_eles = $("#host_groups ul").find(":checked");
+
+            var selected_host_ids = [];
+
+            $.each(selected_host_eles, function (index, ele) {
+                //把取到的主机 id 放到列表中
+                selected_host_ids.push($(ele).val())
+            });
+
+            //未选择主机 弹窗提示
+            if (selected_host_ids.length == 0) {
+                $.niftyNoty({
+                    type: 'info',
+                    icon: 'pli-exclamation icon-2x',
+                    message: 'Hello 您选择将要操作的主机!',
+                    container: 'floating',
+                    timer: 5000
+                });
+
+                // 默认 不选择 主机 和 未输入密码都会弹窗,这里我们设置成只要一个条件不满足,就不往下继续走了.
+                return false
+            }
+
+            //未选择命令 弹窗提示  ($.trim() 是 JQuery去除命令两边的空格)
+            var cmd_text = $.trim($('#cmd').val());
+            if (cmd_text.length == 0) {
+                $.niftyNoty({
+                    type: 'danger',
+                    icon: 'pli-exclamation icon-2x',
+                    message: 'Hello 您输入将要执行命令!',
+                    container: 'floating',
+                    timer: 5000
+                });
+
+                // 默认 不选择 主机 和 未输入密码都会弹窗,这里我们设置成只要一个条件不满足,就不往下继续走了.
+                return false
+            }
+
+
+            // 前端提交到后台的数据格式
+            var task_data = {
+                'task_type': task_type,
+                'selected_host_ids': selected_host_ids,
+                'cmd': cmd_text
+            };
+
+
+            //post 方式提交到后台(需要注意 CSRF 和 JSON.stringify(task_data) 将JavaScript 值转换为JSON 字符串。                //JSON.parse() 方法用来解析JSON字符串，构造由字符串描述的JavaScript值或对象.
+            // JSON.parse(); 用于解析后端发来的 json 格式字符串.进行格式化.
+            $.post("{% url 'multitask' %}", {
+                'csrfmiddlewaretoken': '{{ csrf_token }}',
+                'task_data': JSON.stringify(task_data),
+            },function (callback) {
+                var  task_id  = JSON.parse(callback) //task id 返回任务编号.
+                console.log(task_id)
+            })
+
         }
+
 
     </script>
     <!--===================================================-->
-    <!-- End Functions-->
+    <!-- End JavaScript-->
 
 {% endblock %}

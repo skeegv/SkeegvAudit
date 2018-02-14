@@ -120,3 +120,33 @@ class Token(models.Model):
     这里需要再写一个脚本用于每天清除超时,也就是超过5分钟的记录.不然
     数据库会越来越大.会越来越不好维护.因为 val( 既 token )是唯一的.
     """
+
+
+class Task(models.Model):
+    """存储任务信息"""
+    task_type_choices = ((0, 'cmd'), (1, 'file_transfer'))
+    task_type = models.SmallIntegerField(choices=task_type_choices)
+    host_user_binds = models.ManyToManyField("HostUserBind")
+    content = models.TextField("任务内容")
+    timeout = models.IntegerField("任务超时时间(s)", default=300)
+    account = models.ForeignKey("Account")
+    date = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return "%s-%s-%s" % (self.task_type_choices[self.task_type], self.account.user, self.date)
+
+class TaskLog(models.Model):
+    """命令返回的结果"""
+    task = models.ForeignKey('Task')
+    host_user_bind = models.ForeignKey('HostUserBind')
+    result = models.TextField('命令结果')
+    date = models.DateTimeField(auto_now_add=True)
+    # 连接上就算成功,连接不上就算失败(这里只关注连接)
+    status_choices = ((0, '成功'), (1, '失败'), (2, '超时'))
+    status = models.SmallIntegerField(choices=status_choices)
+
+    class Meta:
+        # 一个任务中,一台主机只能有一个返回结果.
+        unique_together = ('task', 'host_user_bind')
+
+

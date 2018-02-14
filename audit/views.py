@@ -1,10 +1,12 @@
 import json
-import random, string
+import random
+import string
 import datetime
+from audit import models
+from audit import task_handler
 from django.shortcuts import render, redirect, HttpResponse
 from django.contrib.auth import authenticate, login, logout  # 用于用户检测,用户登录,退出
 from django.contrib.auth.decorators import login_required  # 用于检测用户是否已登录
-from audit import models
 
 
 # 首页
@@ -137,3 +139,23 @@ def get_token(request):
 @login_required
 def multi_cmd(request):
     return render(request,'multi_cmd.html')
+
+
+# 测试页
+@login_required
+def text(request):
+    return render(request,'text.html')
+
+
+# 批量执行
+@login_required
+def multitask(request):
+    task_obj = task_handler.Task(request)
+
+    if task_obj.is_valid():
+        # 验证通过
+        result = task_obj.run()
+        return HttpResponse(json.dumps(result))
+
+    # 认证不通过,既发送错误信息给前端
+    return HttpResponse(json.dumps(task_obj.errors))

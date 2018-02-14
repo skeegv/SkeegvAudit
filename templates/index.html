@@ -1,9 +1,9 @@
 {% extends 'base.html' %}
-{# index.html 页面 继承 base 页面,其他页面都继承 Index页面 #}
+{# text.html 页面 继承 base 页面,其他页面都继承 Index页面 #}
 {% block body %}
     <!--CONTAINER-->
     <!--===================================================-->
-    <div id="container" class="effect mainnav-lg .boxed-layout">
+    <div id="container" class="effect mainnav-lg  footer-fixed .boxed-layout">
 
         <!--NAVBAR 左边导航栏-->
         <!--===================================================-->
@@ -13,7 +13,7 @@
                 <!--Brand logo & name-->
                 <!--================================-->
                 <div class="navbar-header">
-                    <a href="index.html" class="navbar-brand">
+                    <a href="/" class="navbar-brand">
                         <img src="/static/img/skeegv_log.png" alt="Skeegv Logo" class="brand-icon">
                         <div class="brand-title">
                             <span class="brand-text">SkeegvAudit</span>
@@ -184,7 +184,7 @@
 
 
                     </ul>
-                    <ul class="nav navbar-top-links pull-right">
+                    <ul class="nav navbar-top-links pull-right ">
 
                         <!--User dropdown-->
                         <!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
@@ -298,7 +298,10 @@
                                             <span class="label label-success pull-right">New</span>
                                             <img class="img-circle img-sm img-border" src="/static/img/profile-photos/skeegv_head_portrait.jpg" alt="Profile Picture">
                                         </div>
-                                        <a href="#profile-nav" class="box-block" data-toggle="collapse" aria-expanded="false">
+                                        {# 合上 #}
+                                        <a id="profile-nav-1"  class="box-block collapsed" data-toggle="collapse" aria-expanded="false">
+                                            {# 展开 #}
+                                        {# <a  class="box-block" data-toggle="collapse" aria-expanded="true">#}
                                             <span class="pull-right dropdown-toggle">
                                                 <i class="dropdown-caret"></i>
                                             </span>
@@ -306,7 +309,11 @@
                                             <span class="mnp-desc">skeegv@gmail.com</span>
                                         </a>
                                     </div>
+                                    {# 合上 #}
                                     <div id="profile-nav" class="collapse list-group bg-trans">
+                                        {# 展开 #}
+{#                                    <div id="profile-nav" class="list-group bg-trans collapse in" aria-expanded="true" style="">#}
+
                                         <a href="#" class="list-group-item">
                                             <i class="ti-medall icon-lg icon-fw"></i> Link 1
                                         </a>
@@ -654,17 +661,34 @@
     <!--Script-->
     <!--===================================================-->
     <script>
-    /*
-        //等文档树构建完毕再执行.页面点击后自动高亮.
-        $(document).ready(function () {
-            $("#mainnav-menu a").click(function () {
-                $(this).parent().addClass('active-link')
-            });//end click
+        /*
+            //等文档树构建完毕再执行.页面点击后自动高亮.
+            $(document).ready(function () {
+                $("#mainnav-menu a").click(function () {
+                    $(this).parent().addClass('active-link')
+                });//end click
+            })
+
+        */
+        $("#mainnav-menu a[href='{{ request.path }}']").parent().addClass('active-link');
+
+
+        //头像下拉菜单
+        $("#profile-nav-1").click(function () {
+            //展开
+            if($("#profile-nav-1").attr("aria-expanded") == 'false'){
+                $("#profile-nav-1").removeClass('collapsed').attr('aria-expanded','true');
+                $('#profile-nav'). addClass('in').attr('aria-expanded','true')
+
+            }//收缩
+            else{
+                $("#profile-nav-1").addClass('collapsed').attr('aria-expanded','false');
+                $('#profile-nav'). removeClass('in').removeAttr('aria-expanded')
+
+            }
         })
 
-    */
-    $("#mainnav-menu a[href='{{ request.path }}']").parent().addClass('active-link')
-</script>
+    </script>
     <!--===================================================-->
     <!-- End Script-->
 {% endblock %}
