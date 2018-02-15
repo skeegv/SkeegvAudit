@@ -1,5 +1,9 @@
-import json
+import json  # Json简介：Json，全名 JavaScript Object Notation，是一种轻量级的数据交换格式。
 from audit import models
+import subprocess  # subprocess模块允许我们创建子进程,连接他们的输入/输出/错误管道，还有获得返回值。
+from threading import Thread  # 操作线程的模块(Thread 是threading模块中最重要的类之一，可以使用它来创建线程)
+from SkeegvAudit import settings
+from django.db.transaction import atomic  # 数据库事务(atomic块中必须注意try的使用，如果手动捕获了程序错误会导致atomic包装器捕获不到异常，也就不会回滚。要么try内代码不影响事务操作，要么就捕获异常后raise出，让atomic可以正常回滚)
 
 
 class Task(object):
@@ -17,6 +21,7 @@ class Task(object):
         :return:
         """
         task_data = self.request.POST.get('task_data')
+
         if task_data:
             self.task_data = json.loads(task_data)
             """
@@ -48,39 +53,64 @@ class Task(object):
         :return: task_id
         """
         # 反射
-        task_func = getattr(self,self.task_data.get('task_type'))
-        res = task_func()
+        task_func = getattr(self, self.task_data.get('task_type'))
+        task_id = task_func()
 
-        return "task_id"
+        return task_id
 
+    @atomic  # 在需要进行事务处理的加上 @atomic 装饰器(原子性)
     def cmd(self):
         """批量任务"""
-        print('run multi cmd')
-        """
-        # 数据库表
-        class Task(models.Model):
-            task_type_choices = ((0, 'cmd'), (1, 'file_transfer'))
-            task_type = models.SmallIntegerField(choices=task_type_choices)
-            host_user_binds = models.ManyToManyField("HostUserBind")
-            content = models.TextField("任务内容")
-            timeout = models.IntegerField("任务超时时间(s)", default=300)
-            account = models.ForeignKey("Account")
-            date = models.DateTimeField(auto_now_add=True)
-        """
 
         task_obj = models.Task.objects.create(
             # task_type=self.task_data.get('task_type'),  0对应数据库里 task_choices 的 cmd
             task_type=0,
             account=self.request.user.account,
             content=self.task_data.get('cmd'),
-            #host_user_binds=多对多需要直接对象添加
         )
-        #task_obj.host_user_binds.add(1,2,3) 原本是这样传进去,
-        # 但是我们前端返回的是一个列表,所以这里要加一个 *
-        task_obj.host_user_binds.add(*self.task_data.get('selected_host_ids'))
 
-        # 保存obj时要调用obj.save().
-        task_obj.save()
+
+        # 主机会重复,所以要去重 (Python set() 函数Python 内置函数描述set() 函数创建一个无序不重复元素集，可进行关系测试，删除重复数据，还可以计算交集、差集、并集等。)
+        host_ids = set(self.task_data.get("selected_host_ids"))
+
+        tasklog_objs = []
+
+        for host_id in host_ids:
+            tasklog_objs.append(
+                models.TaskLog(task_id=task_obj.id,
+                               host_user_bind_id=host_id,
+                               status=3)
+            )
+
+        """
+        由于TaskLog.objects.create()每保存一条就执行一次SQL，而bulk_create()是执行一条SQL存入多条数据，做会快很多！
+        当然用列表解析代替 for 循环会更快！！
+        """
+        models.TaskLog.objects.bulk_create(tasklog_objs, 100)
+
+        # 执行任务
+        """
+        # 完全独立的进程(脚本)
+
+        subprocess 模块中基本的进程创建和管理由Popen 类来处理.
+        subprocess.popen是用来替代os.popen的.
+        shell=True (默认是 false)在 unix 下想让与 args 前面添加了 /bin/sh
+        PIPE 创建管道
+        stdin 输入
+        stdout 输出
+        stderr 错误信息
+        args 字符串或者列表
+    
+        """
+
+        multitask_obj = subprocess.Popen('python3 %s %s' % (settings.MULTI_TASK_SCRIPT, task_obj.id), shell=True)
+
+
+        # 返回任务 id 给前端
+        return task_obj.id
+
+    def run_cmd(self):
+        pass
 
     def file_transfer(self):
         """批量任务"""

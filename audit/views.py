@@ -154,8 +154,32 @@ def multitask(request):
 
     if task_obj.is_valid():
         # 验证通过
-        result = task_obj.run()
-        return HttpResponse(json.dumps(result))
+        task_id = task_obj.run()
+        return HttpResponse(json.dumps({'task_id': task_id}))
 
     # 认证不通过,既发送错误信息给前端
     return HttpResponse(json.dumps(task_obj.errors))
+
+
+@login_required
+def multitask_result(request):
+    task_id = request.GET.get('id')
+    task_obj = models.Task.objects.get(id=task_id)
+
+    """
+    [{
+        'task_log_id:,
+        'hostname'
+        'ipaddr',
+        'status',
+        'username'
+    }]
+    """
+    result = list(task_obj.tasklog_set.values('id','status',
+                                'host_user_bind__host__hostname',
+                                'host_user_bind__host__ip_addr',
+                                'result',
+                                ))
+
+    return HttpResponse(json.dumps(result))
+

@@ -123,7 +123,7 @@
                     </div>
                     <div class="panel-body">
                         <div class="panel-body">
-                            body
+                            <div id="task_result"></div>
                         </div>
                     </div>
                 </div>
@@ -222,12 +222,42 @@
             // JSON.parse(); 用于解析后端发来的 json 格式字符串.进行格式化.
             $.post("{% url 'multitask' %}", {
                 'csrfmiddlewaretoken': '{{ csrf_token }}',
-                'task_data': JSON.stringify(task_data),
+                'task_data': JSON.stringify(task_data)
             },function (callback) {
-                var  task_id  = JSON.parse(callback) //task id 返回任务编号.
-                console.log(task_id)
-            })
+                var  callback  = JSON.parse(callback); //task id 返回任务编号.
 
+
+                GetTaskResult(callback.task_id)
+
+                // 定时器 2秒执行
+                var result_timer = setInterval(function () {
+                    GetTaskResult(callback.task_id)
+                },2000);
+            }) //end post
+        }
+
+        //获取结果
+        function GetTaskResult(task_id) {
+            //获取的时候自动 JSON 了
+            $.getJSON("{% url 'get_task_result' %}",{'id':task_id}, function(callback){
+                console.log(callback);
+
+                //两秒刷新
+                var result_ele = '';
+                $.each(callback,function (index, i) {
+                    var p_ele = "<p>" + i.host_user_bind__host__hostname + "(" + i.host_user_bind__host__ip_addr + ")" + "----" +
+                            i.status + "</p>";
+
+
+                    // pre 标签,后台是什么样,前端就怎么展示
+                    var res_ele = "<pre>" + i.result + "</pre>"
+
+                    var single_result = p_ele + res_ele
+
+                    result_ele += single_result
+                })
+                $("#task_result").html(result_ele)
+            })
         }
 
 
