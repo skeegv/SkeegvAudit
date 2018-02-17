@@ -21,7 +21,6 @@ urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^$', views.index),
     url(r'^login/$', views.acc_login),
-    url(r'^text/$', views.text),
     url(r'^logout/$', views.acc_logout),
     url(r'^hostlist/$', views.host_list, name="host_list"),
     # multitask 多任务

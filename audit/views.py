@@ -1,12 +1,33 @@
 import json
 import random
 import string
-import datetime
 from audit import models
 from audit import task_handler
 from django.shortcuts import render, redirect, HttpResponse
 from django.contrib.auth import authenticate, login, logout  # 用于用户检测,用户登录,退出
 from django.contrib.auth.decorators import login_required  # 用于检测用户是否已登录
+
+
+# json 扩展:支持时间格式化
+class JsonCustomEncoder(json.JSONEncoder):
+    """
+        使用方法
+        data = json.dumps(result, cls=JsonCustomEncoder)
+        return HttpResponse(data)
+    """
+    # 我们有 default 方法 就会优先执行我们自己写的
+    def default(self, value):
+        from datetime import date
+        from datetime import datetime
+        # 如果是 datetime 类型
+        if isinstance(value, datetime):
+            return value.strftime('%Y-%m-%d %H:%M:%S')
+        # 如果是 date 类型
+        elif isinstance(value, date):
+            return value.strftime("%Y-%m-%d")
+        # 不是时间就是用他默认的
+        else:
+            return json.JSONEncoder.default(self, value)
 
 
 # 首页
@@ -86,16 +107,16 @@ def get_token(request):
     < QueryDict: {'bind_host_id': ['4'],'csrfmiddlewaretoken': ['QDmVoHtzYQq1TiL83Pv7JXlBl8dSvfJaxYrrLJbg2ZnPjd8WrbAvntBClSnxfmSl']} >
     """
     bind_host_id = request.POST.get('bind_host_id')
-
+    import datetime
     # 当前时间 -300秒(既5分钟)
     time_obj = datetime.datetime.now() - datetime.timedelta(seconds=300)
 
     # 查询当前 DJango 登录用户是否在5分种之内已经生成,如果是(那么继续返回已经生的那个)
     exist_token_obj = models.Token.objects.filter(account_id=request.user.account.id,
                                                   host_user_bind=bind_host_id,
-                                                  date__gt=time_obj)    # __gt 大于
+                                                  date__gt=time_obj)  # __gt 大于
 
-    if exist_token_obj: #has token already
+    if exist_token_obj:  # has token already
         """
         print(exist_token_obj[0].expire)
         300
@@ -110,7 +131,7 @@ def get_token(request):
         oa4bf75k
 
         print(exist_token_obj.values())
-        <QuerySet [{'id': 18, 'host_user_bind_id': 1, 'val': 'oa4bf75k', 'account_id': 1, 'expire': 300, 'date': datetime.datetime(2018, 2, 13, 2, 2, 47, 24882, tzinfo=<UTC>)}]>
+        <QuerySet [{'id': 18, 'host_user_bind_id': 1, 'val': 'oa4bf75k', 'account_id': 1, 'expire': 300, 'date': datetime(2018, 2, 13, 2, 2, 47, 24882, tzinfo=<UTC>)}]>
         """
         token_data = {'token': exist_token_obj[0].val}
     else:
@@ -122,7 +143,6 @@ def get_token(request):
             token = models.Token.objects.filter(val=token_val)
             # 如果没有既使用当前生成的 token 进行创建            print('end 数据库里已存在')
             if not token:
-
                 token_obj = models.Token.objects.create(
                     host_user_bind_id=bind_host_id,
                     account=request.user.account,
@@ -138,13 +158,7 @@ def get_token(request):
 # multitask 多任务
 @login_required
 def multi_cmd(request):
-    return render(request,'multi_cmd.html')
-
-
-# 测试页
-@login_required
-def text(request):
-    return render(request,'text.html')
+    return render(request, 'multi_cmd.html')
 
 
 # 批量执行
@@ -175,11 +189,10 @@ def multitask_result(request):
         'username'
     }]
     """
-    result = list(task_obj.tasklog_set.values('id','status',
-                                'host_user_bind__host__hostname',
-                                'host_user_bind__host__ip_addr',
-                                'result',
-                                ))
+    result = list(task_obj.tasklog_set.values('id', 'status',
+                                              'host_user_bind__host__hostname',
+                                              'host_user_bind__host__ip_addr',
+                                              'result',
+                                              ))
 
     return HttpResponse(json.dumps(result))
-

@@ -46,6 +46,16 @@ class UserShell(object):
             else:
                 # 获取当前时间 - 300 秒(既5分钟) 做超时时间的验证
                 time_obj = datetime.datetime.now() - datetime.timedelta(seconds=300)
+                """
+                __eq__(self, other) 定义了等号的行为, == 。
+
+                __ne__(self, other) 定义了不等号的行为, != 。
+
+                __lt__(self, other) 定义了小于号的行为， < 。
+
+                __gt__(self, other) 定义了大于等于号的行为， >= 。
+
+                """
                 # token_obj 可能会取到多个(几乎不可能,因为在写入数据库的时候已经限制了必须是唯一的),我们要取的是5分钟之内最新的才算是合法的 token
                 token_obj = models.Token.objects.filter(val=user_input, date__gt=time_obj).first()
 

@@ -34,7 +34,7 @@ def cmd_run(tasklog_obj, cmd_str):
         if len(result) > 0:
             result = result.decode('utf8')
             print(result)
-            tasklog_obj.result = result or 'cmd has no result.'
+            tasklog_obj.result = result
         else:
             tasklog_obj.result = 'cmd has no result.'
 
@@ -42,8 +42,9 @@ def cmd_run(tasklog_obj, cmd_str):
         tasklog_obj.status = 0
         tasklog_obj.save()
     except Exception as e:
-        print('error: ', e)
-
+        tasklog_obj.status = 1
+        tasklog_obj.result = 'error:  Authentication failed.'
+        tasklog_obj.save()
 
 # 批量文件
 def file_transfer(bind_host_obj):
