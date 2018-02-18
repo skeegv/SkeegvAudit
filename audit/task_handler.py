@@ -20,9 +20,12 @@ class Task(object):
         2.验证命令,主机列表合法性
         :return:
         """
+        # 获取 task_data 里的数据
         task_data = self.request.POST.get('task_data')
 
+        # 判断 task_data 是否有数据
         if task_data:
+            # 对task_data 进行反序列化
             self.task_data = json.loads(task_data)
             """
             前后端都需要验证,前端验证只是为了减轻 Server 端的压力,
@@ -32,17 +35,19 @@ class Task(object):
             var task_data = {
                 'task_type': task_type,
                 'selected_host_ids': selected_host_ids, #hsot_user_binds(用户和主机)
-                'cmd': cmd_text
+                'cmd': cmd_text # 或 file_transfer = 文件
             };
             """
 
-            # 判断文件类型
+            # 验证文件类型是否有值
             if self.task_data.get('task_type') == 'cmd':
                 if self.task_data.get('cmd') and self.task_data.get('selected_host_ids'):
                     return True
                 self.errors.append({'invalid_argument': 'cmd or host_list is empty!'})
             elif self.task_data.get('task_type') == "file_transfer":
-                self.errors.append({'invalid_argument': 'cmd or host_list is empty!'})
+                if self.task_data.get('file_transfer') and self.task_data.get('selected_host_ids'):
+                    return True
+                self.errors.append({'invalid_argument': 'file or host_list is empty!'})
             else:
                 self.errors.append({'invalid_argument': 'task_type is invalid!'})
         self.errors.append({'invalid_data': 'task_data is not exist'})
@@ -109,9 +114,54 @@ class Task(object):
         # 返回任务 id 给前端
         return task_obj.id
 
-    def run_cmd(self):
-        pass
 
+    @atomic  # 在需要进行事务处理的加上 @atomic 装饰器(原子性)
     def file_transfer(self):
-        """批量任务"""
+        """批量文件"""
         print('run multi file_transfer')
+        # 创建 任务记录
+        task_obj = models.Task.objects.create(
+            # task_type=self.task_data.get('task_type'),  0对应数据库里 task_choices 的 cmd
+            task_type=0,
+            account=self.request.user.account,
+            content=json.dumps(self.task_data),
+        )
+
+        # 主机会重复,所以要去重 (Python set() 函数Python 内置函数描述set() 函数创建一个无序不重复元素集，可进行关系测试，删除重复数据，还可以计算交集、差集、并集等。)
+        host_ids = set(self.task_data.get("selected_host_ids"))
+
+        tasklog_objs = []
+
+        # 通过前端发来的主机 id列表,取到每一台主机
+        for host_id in host_ids:
+            tasklog_objs.append(
+                models.TaskLog(task_id=task_obj.id,
+                               host_user_bind_id=host_id,
+                               status=3)
+            )
+
+        """
+        由于TaskLog.objects.create()每保存一条就执行一次SQL，而bulk_create()是执行一条SQL存入多条数据，做会快很多！
+        当然用列表解析代替 for 循环会更快！！
+        """
+        models.TaskLog.objects.bulk_create(tasklog_objs, 100)
+
+        # 执行任务
+        """
+        # 完全独立的进程(脚本)
+
+        subprocess 模块中基本的进程创建和管理由Popen 类来处理.
+        subprocess.popen是用来替代os.popen的.
+        shell=True (默认是 false)在 unix 下想让与 args 前面添加了 /bin/sh
+        PIPE 创建管道
+        stdin 输入
+        stdout 输出
+        stderr 错误信息
+        args 字符串或者列表
+
+        """
+
+        multitask_obj = subprocess.Popen('python3 %s %s' % (settings.MULTI_TASK_SCRIPT, task_obj.id), shell=True)
+
+        # 返回任务 id 给前端
+        return task_obj.id

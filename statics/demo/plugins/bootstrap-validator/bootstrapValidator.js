@@ -2923,7 +2923,7 @@ if (typeof jQuery === 'undefined') {
 		},
 
 		/**
-		* Validate upload file. Use HTML 5 API if the browser supports
+		* Validate uploads file. Use HTML 5 API if the browser supports
 		*
 		* @param {BootstrapValidator} validator The validator plugin instance
 		* @param {jQuery} $field Field element

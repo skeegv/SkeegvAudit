@@ -1,0 +1,94 @@
+{% extends 'index.html' %}
+
+<!--额外的 CSS-->
+{% block extra-css %}
+    {# dropzonejs 来做文件上传和预览 #}
+    <link href="/static/plugins/dropzone/dropzone.css" rel="stylesheet">
+    <script src="/static/plugins/dropzone/dropzone.js"></script>
+{% endblock %}
+
+
+
+{% block content-container %}
+
+<!--Page content-->
+<!--===================================================-->
+<div id="page-content">
+    {# 主机组 #}
+    {% include 'components/hostgroups.html' %}
+    <div class="col-lg-8">
+        {# 文件上传 #}
+        <div class="col-lg-12">
+            <!--Panel with Header-->
+            <!--===================================================-->
+            <div class="panel">
+                <div class="panel-heading">
+                    <h3 class="panel-title">文件传输</h3>
+                </div>
+                <div class="panel-body">
+                    {# 文件操作下拉选择框 #}
+                    <select name="transfer-type" onchange="ToggUploadEle(this)">
+                        <option value="send">发送文件到远程主机</option>
+                        <option value="get">从远程主机下载文件</option>
+                    </select>
+
+                    {# 文件上传插件 dropzone ( action 不加默认当前页面路径 http://127.0.0.1:8000/api/task_file_upload/?random_str=lkdw59fc )#}
+                    <form id="file_dropzone" action="{% url 'task_file_upload' %}?random_str={{ random_str }}" class="dropzone dz-clickable">
+                        <div class="dz-default dz-message">
+                            <div class="dz-icon">
+                                <i class="demo-pli-upload-to-cloud icon-5x"></i>
+                            </div>
+                            <div>
+                                <span class="dz-text">删除要上传的文件</span>
+                                <p class="text-sm text-muted">或点击手动选择</p>
+                            </div>
+                        </div>
+                    </form>
+                    {# 后端 multi_file_transfer 返回的字典(既随机字符串) #}
+                    <input type="hidden" value="{{ random_str }}" name="random_str">
+
+                    {# 远程路径输入框 #}
+                    <input id="remote_path" class="form-control" type="text" placeholder="远程路径">
+
+
+                    {# Task 进度条 #}
+                    <div class="progress progress-striped active">
+                        <div id="task_progress" style="width: 0%;" class="progress-bar progress-bar-dark"></div>
+                    </div>
+                    {# 执行 按钮 #}
+                    <button onclick="PostTask('file-transfer')" id="demo-bootbox-alert" class="btn btn-info  pull-left">执行</button>
+                    {# 终止 按钮 #}
+                    <button class="btn btn-purple pull-right">终止</button>
+                </div>
+            </div>
+            <!--===================================================-->
+            <!--End Panel with Header-->
+        </div>
+
+        {# task result #}
+        {% include 'components/taskresult.html' %}
+    </div>
+</div>
+
+
+
+<!--JavaScript-->
+<!--===================================================-->
+    {% include 'components/multitask_js.html' %}
+
+    <script>
+    //判断是上传还是下载(下载就需要隐藏上传文件的标签)
+    function ToggUploadEle(self) {
+        console.log($(self).val());
+        if($(self).val() == "get"){
+            $(self).next().addClass("hide")
+        }else{
+            $(self).next().removeClass("hide")
+        }
+
+    }
+    </script>
+<!--===================================================-->
+<!-- End JavaScript-->
+
+{% endblock %}

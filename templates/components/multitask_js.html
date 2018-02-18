@@ -1,0 +1,207 @@
+<script>
+
+    {# 显示或隐藏当前主机 #}
+
+    DisplayHostList = function (self) {
+        // toggleClass() 对设置或移除被选元素的一个或多个类进行切换.该方法检查每个元素中指定的类。如果不存在则添加类，如果已设置则删除之。这就是所谓的切换效果。
+        $(self).next().toggleClass('hide')
+    };
+
+    {# 全选按钮 #}
+
+    CheckAll = function (self) {
+        // 设置全选,如果 self 当前标签prop(checked) 为true(选中)那么他父亲下的 ul下的 checkbox 都为 true, 反之亦然.
+        // prop() 方法设置或返回被选元素的属性和值
+        ($(self).parent().find("ul :checkbox").prop('checked', $(self).prop('checked')));
+        ShowCheckedHostCount()
+
+    };
+
+    {# 计算当前选中的主机数 #}
+
+     ShowCheckedHostCount = function () {
+        // 计算所有被选中的 checkbox
+        var selected_host_count = $("#host_groups ul").find(":checked").length;
+        $("#selected_hosts").text(selected_host_count)
+    };
+
+    {# 批量执行命令 或 上传文件 #}
+
+     PostTask = function (task_type) {
+        //1.验证主机列表已选,命令已输入
+        //2.提交任务到后台
+
+        // 找到所有被选中的 checkbox
+        var selected_host_eles = $("#host_groups ul").find(":checked");
+
+        var selected_host_ids = [];
+
+        $.each(selected_host_eles, function (index, ele) {
+            //把取到的主机 id 放到列表中
+            selected_host_ids.push($(ele).val())
+        });
+
+        //未选择主机 弹窗提示(文档中搜 Alert
+        if (selected_host_ids.length == 0) {
+            $.niftyNoty({
+                type: 'info',
+                icon: 'pli-exclamation icon-2x',
+                message: 'Hello 您选择将要操作的主机!',
+                container: 'floating',
+                timer: 5000
+            });
+
+            // 默认 不选择 主机 和 未输入密码都会弹窗,这里我们设置成只要一个条件不满足,就不往下继续走了.
+            return false
+        }
+
+        if (task_type == 'cmd') {
+            //未选择命令 弹窗提示  ($.trim() 是 JQuery去除命令两边的空格)
+            var cmd_text = $.trim($('#cmd').val());
+            //判断命令输入是否为空
+            if (cmd_text.length == 0) {
+                //右上角alert()
+                $.niftyNoty({
+                    type: 'danger',
+                    icon: 'pli-exclamation icon-2x',
+                    message: 'Hello 您输入将要执行命令!',
+                    container: 'floating',
+                    timer: 5000
+                });
+                // 默认 不选择 主机 和 未输入密码都会弹窗,这里我们设置成只要一个条件不满足,就不往下继续走了.
+                return false
+            }
+        } else if (task_type == 'file-transfer') {
+            var remote_path = $("#remote_path").val();
+            {# $.trim() 此函数返回字符串 str 去除首尾空白字符后的结果。#}
+            if ($.trim(remote_path).length == 0) {
+                $.niftyNoty({
+                    type: 'danger',
+                    icon: 'pli-exclamation icon-2x',
+                    message: 'Hello 您还需要输入远程路径!',
+                    container: 'floating',
+                    timer: 5000
+                });
+            }
+        }
+
+        // 前端提交到后台的数据格式
+        var task_data = {
+            'task_type': task_type,
+            'selected_host_ids': selected_host_ids
+        };
+
+        //判断文件类型
+        if (task_type == 'cmd') {
+            //文件类型
+            task_data['cmd'] = cmd_text
+        } else if (task_type == 'file-transfer') {
+            var file_transfer_type = $("select[name='transfer-type']").val();
+            //文件类型
+            task_data['file_transfer_type'] = file_transfer_type;
+            //随机字符串
+            task_data['random_str']="{{ random_str }}"
+
+        };
+
+        //post 方式提交到后台(需要注意 CSRF 和 JSON.stringify(task_data) 将JavaScript 值转换为JSON 字符串。                //JSON.parse() 方法用来解析JSON字符串，构造由字符串描述的JavaScript值或对象.
+        // JSON.parse(); 用于解析后端发来的 json 格式字符串.进行格式化.
+        $.post("{% url 'multitask' %}", {
+            'csrfmiddlewaretoken': '{{ csrf_token }}',
+            'task_data': JSON.stringify(task_data)
+        }, function (callback) {
+            var callback = JSON.parse(callback); //task id 返回任务编号.
+
+            // task_id 是后端封装的 id.
+            GetTaskResult(callback.task_id);
+
+            // 循环执行的定时器 2秒执行
+            var result_timer = setInterval(function () {
+                GetTaskResult(callback.task_id, result_timer)
+            }, 2000);
+        }); //end post
+    };
+
+
+    //获取结果
+    GetTaskResult = function(task_id, result_timer) {
+        //获取的时候自动 JSON 了
+        $.getJSON("{% url 'get_task_result' %}", {'id': task_id}, function (callback) {
+            console.log(callback);
+
+            // 两秒刷新
+            var result_ele = '';
+            // 计数
+            var finished_task_count = 0;
+
+            $.each(callback, function (index, i) {
+                var p_ele = "<p>" + i.host_user_bind__host__hostname + "(" + i.host_user_bind__host__ip_addr + ")" + "----" +
+                    i.status + "</p>";
+
+                // pre 标签,后台是什么样,前端就怎么展示
+                var res_ele = "<pre>" + i.result + "</pre>"
+
+                var single_result = p_ele + res_ele;
+
+                result_ele += single_result;
+
+                //check if ths sub task is finished.
+                if (i.status != 3) {
+                    finished_task_count += 1;
+                }
+            });
+
+            task_error_count = 0;
+            // 退出2秒 循环去后台取数据
+            if (finished_task_count == callback.length) {
+                $.each(callback, function (index, i) {
+                    if (i.status == 1) {
+                        task_error_count += 1
+                    } else if (i.status == 2) {
+                        task_error_count += 1
+                    }
+                });
+                clearInterval(result_timer);
+                console.log("timer canceled")
+            }
+
+            // 判断是否有错误(有则提示)
+            if (task_error_count > 0) {
+                $.niftyNoty({
+                    type: 'danger',
+                    container: '#task_result_panel',
+                    html: '<h4 class="alert-title">Oh snap! You have a Task to fail!</h4><p class="alert-message">Change this and that and try again.</p><div class="mar-top"><button type="button" class="btn btn-danger" data-dismiss="noty">Close this notification</button></div>',
+                    closeBtn: false
+                });
+            }
+
+            $("#task_result").html(result_ele);
+
+            //set progress bar 只要状态 不为 3 就算成功.
+            var total_finished_percent = finished_task_count / callback.length * 100;
+            $("#task_progress").css("width", total_finished_percent + "%")
+        });
+    };
+
+
+    {#$(document).ready(function () {#}
+    {#       var myDropzone = new Dropzone('#file_dropzone');#}
+    {##}
+    {#       // file_dropzone 是 dropzone 上传文件的那个 from 表单id#}
+    {#       Dropdown.option.file_dropzone = {#}
+    {#           paraName:"file",  // 用于传递文件的名称(reqeust.Files.get('file') 中的 file#}
+    {#           maxFilesize:2, // MB, 文件大小,前端控制#}
+    {#           maxFiles:6, // 最大上传文件数#}
+    {#           accept:function (file,done) {#}
+    {#               // 如果上传文件中有和这个 test.jpg 既打印 done 的内容#}
+    {#               if(file.name = "test.jpg"){#}
+    {#                   done("Hi, Skeegv");#}
+    {#               }else{#}
+    {#                   done();#}
+    {#               }#}
+    {#           }#}
+    {#       }#}
+    {#    });#}
+
+
+</script>

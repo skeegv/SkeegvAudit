@@ -350,7 +350,7 @@ class SFTPFile (BufferedFile):
     def check(self, hash_algorithm, offset=0, length=0, block_size=0):
         """
         Ask the server for a hash of a section of this file.  This can be used
-        to verify a successful upload or download, or for various rsync-like
+        to verify a successful uploads or download, or for various rsync-like
         operations.
 
         The file is hashed from ``offset``, for ``length`` bytes.

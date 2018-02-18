@@ -22,6 +22,10 @@ class TaskLogAdmin(admin.ModelAdmin):
     list_filter = ['result', ]
 
 
+class PartyAdmin(admin.ModelAdmin):
+    list_display = ['name','Amount_money','type','date']
+    list_filter = ['Amount_money','date']
+
 admin.site.register(models.Host)
 admin.site.register(models.HostGroup)
 admin.site.register(models.HostUser)
@@ -33,3 +37,4 @@ admin.site.register(models.SessionLog, SessionLogAdmin)
 admin.site.register(models.Token)
 admin.site.register(models.Task)
 admin.site.register(models.TaskLog, TaskLogAdmin)
+admin.site.register(models.Party, PartyAdmin)

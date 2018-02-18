@@ -149,3 +149,13 @@ class TaskLog(models.Model):
     class Meta:
         # 一个任务中,一台主机只能有一个返回结果.
         unique_together = ('task', 'host_user_bind')
+
+
+class Party(models.Model):
+    """同学聚会"""
+    name = models.CharField('同学姓名',max_length=128)
+    Amount_money = models.SmallIntegerField('金额')
+    type = models.CharField('种类',max_length=25,default= '[人民币] 元')
+    date = models.DateTimeField('日期', auto_now_add=True)
+
+

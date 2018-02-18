@@ -1,0 +1,57 @@
+
+{# {% include 'components/hostgroups.html' %}#}
+{# 就可以调用这个插件了. #}
+<div class="col-lg-4">
+    <!--Panel with Header-->
+    <!--===================================================-->
+    <div class="panel">
+        <div class="panel-heading">
+            <h3 class="panel-title">主机组 <span class="pull-right">已选主机: <span id="selected_hosts">0</span></span>
+            </h3>
+        </div>
+        <div class="panel-body">
+            <div class="panel-body">
+                <div class="panel-body">
+                    <!--List Group with Badges-->
+                    <!--===================================================-->
+                    <!--{{ request.user.account.host_groups.all }}  {# 在前端从数据库取出数据 #}-->
+
+                    <ul class="list-group" id="host_groups">
+                        {% for group in request.user.account.host_groups.all %}
+                            <li class="list-group-item">
+                                <span class="badge badge-success">{{ group.host_user_binds.count }}</span>
+                                <input type="checkbox" onclick="CheckAll(this)">
+                                <a class="label label-info" onclick="DisplayHostList(this)">{{ group.name }}</a>
+                                <ul class="hide">
+                                    {# 取出组里的所有主机 #}
+                                    {% for bind_host in group.host_user_binds.all %}
+                                        <li onclick="ShowCheckedHostCount()"><input type="checkbox"
+                                                                                    value="{{ bind_host.id }}"> {{ bind_host.host.hostname }}: {{ bind_host.host.ip_addr }}-{{ bind_host.host_user.username }}
+                                        </li>
+                                    {% endfor %}
+                                </ul>
+                            </li>
+                        {% endfor %}
+                        <li class="list-group-item">
+                            <span class="badge badge-success">{{ request.user.account.host_user_binds.count }}</span>
+                            <input type="checkbox" onclick="CheckAll(this)">
+                            <a class="label label-purple" onclick="DisplayHostList(this)">未分组主机</a>
+                            <ul class="hide">
+                                {# 取出组里的所有主机 #}
+                                {% for bind_host in request.user.account.host_user_binds.all %}
+                                    <li onclick="ShowCheckedHostCount()"><input type="checkbox"
+                                                                                value="{{ bind_host.id }}"> {{ bind_host.host.hostname }}: {{ bind_host.host.ip_addr }}-{{ bind_host.host_user.username }}
+                                    </li>
+                                {% endfor %}
+                            </ul>
+                        </li>
+                    </ul>
+                    <!--===================================================-->
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <!--===================================================-->
+    <!--End Panel with Header-->
+</div>

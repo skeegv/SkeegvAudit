@@ -1,12 +1,14 @@
 import json
 import random
 import string
+import os
 from audit import models
 from audit import task_handler
 from django.shortcuts import render, redirect, HttpResponse
 from django.contrib.auth import authenticate, login, logout  # 用于用户检测,用户登录,退出
 from django.contrib.auth.decorators import login_required  # 用于检测用户是否已登录
-
+from django.views.decorators.csrf import csrf_exempt    # 免除csrf_token 验证
+from django.conf import settings
 
 # json 扩展:支持时间格式化
 class JsonCustomEncoder(json.JSONEncoder):
@@ -155,17 +157,19 @@ def get_token(request):
     return HttpResponse(json.dumps(token_data))
 
 
-# multitask 多任务
+# multitask 多任务 命令
 @login_required
 def multi_cmd(request):
     return render(request, 'multi_cmd.html')
 
 
-# 批量执行
+# 批量执行 命令 和 文件
 @login_required
 def multitask(request):
+    # 生成一个对象
     task_obj = task_handler.Task(request)
 
+    # 使用对象里的验证方法
     if task_obj.is_valid():
         # 验证通过
         task_id = task_obj.run()
@@ -175,6 +179,7 @@ def multitask(request):
     return HttpResponse(json.dumps(task_obj.errors))
 
 
+# 获取批量执行的结果
 @login_required
 def multitask_result(request):
     task_id = request.GET.get('id')
@@ -196,3 +201,47 @@ def multitask_result(request):
                                               ))
 
     return HttpResponse(json.dumps(result))
+
+
+# multitask 多任务 文件
+@login_required
+def multi_file_transfer(request):
+    # 生成8位随机token
+    random_str = ''.join((random.sample(string.ascii_lowercase + string.digits, 8)))
+
+    # Python 的内建函数 locals() 。它返回的字典对所有局部变量的名称与值进行映射，
+    return render(request,'multi_file_transfer.html', locals())
+
+
+@login_required
+@csrf_exempt    #免除 cdrf_token 验证
+def task_file_upload(request):
+    # 随机字符串
+    random_str = request.GET.get("random_str")
+
+    # 文件上传暂存路径 格式:文件路径/当前登录用户名/随机字符串
+    upload_to = "%s/%s/%s" % (settings.FILE_UPLOADS, request.user.account.id, random_str)
+
+    # 如果文件上传暂存路径不存在 既 创建
+    if not os.path.isdir(upload_to):
+        # 递归创建 如不需要可以  os.mkdir() os.makedirs 函数还有第三个参数 exist_ok，该参数为真时执行mkdir -p，但如果给出了mode参数，目标目录已经存在并且与即将创建的目录权限不一致时，会抛出OSError异常。
+        os.makedirs(upload_to,exist_ok=True)
+
+    # 获取上传的文件对象
+    file_obj = request.FILES.get('file')
+
+    # 打开文件
+    f = open("%s/%s" % (upload_to, file_obj.name), 'wb')
+
+    # 分块写入文件;
+    for chunk in file_obj.chunks():
+        f.write(chunk)
+
+    # 关闭文件
+    f.close()
+    """
+        f = request.FILES
+        print(f)
+        <MultiValueDict: {'file': [<InMemoryUploadedFile: 26073028_165757184038577_8143277732885692416_n.jpg (image/jpeg)>]}>
+    """
+    return HttpResponse('ok')

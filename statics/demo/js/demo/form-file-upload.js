@@ -50,7 +50,7 @@ $(document).ready(function() {
     var previewTemplate = previewNode.parentNode.innerHTML;
     previewNode.parentNode.removeChild(previewNode);
 
-    var uplodaBtn = $('#dz-upload-btn');
+    var uplodaBtn = $('#dz-uploads-btn');
     var removeBtn = $('#dz-remove-btn');
     var myDropzone = new Dropzone(document.body, { // Make the whole body a dropzone
         url: "/target-url", // Set the url
@@ -76,7 +76,7 @@ $(document).ready(function() {
     });
 
     myDropzone.on("sending", function(file) {
-        // Show the total progress bar when upload starts
+        // Show the total progress bar when uploads starts
         document.querySelector("#dz-total-progress").style.opacity = "1";
     });
 

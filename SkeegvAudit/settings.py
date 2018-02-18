@@ -130,5 +130,8 @@ SESSION_TRACKER_SCRIPT = os.path.join(BASE_DIR, 'audit/backend/session_tracker.s
 # 批量执行命令脚本的路径
 MULTI_TASK_SCRIPT = os.path.join(BASE_DIR, 'audit', 'backend', 'multitask.py')
 
-
+# 最大任务进程数
 MaxTaskProcesses = 10
+
+# 文件上传暂存路径
+FILE_UPLOADS = os.path.join(BASE_DIR, 'uploads')

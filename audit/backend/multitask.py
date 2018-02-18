@@ -7,12 +7,8 @@ import multiprocessing  # multiprocessing 是 python 的多进程并行库，可
 
 # 批量执行命令
 def cmd_run(tasklog_obj, cmd_str):
-
     try:
         bind_host_obj = tasklog_obj.host_user_bind
-
-        # print('run cmd:', bind_host_obj.host.ip_addr, cmd_str)
-        print('run cmd:', bind_host_obj, cmd_str)
 
         # 建立ssh连接 使用密码连接：
         ssh = paramiko.SSHClient()
@@ -33,7 +29,6 @@ def cmd_run(tasklog_obj, cmd_str):
         # 如果没有返回值
         if len(result) > 0:
             result = result.decode('utf8')
-            print(result)
             tasklog_obj.result = result
         else:
             tasklog_obj.result = 'cmd has no result.'
@@ -43,12 +38,48 @@ def cmd_run(tasklog_obj, cmd_str):
         tasklog_obj.save()
     except Exception as e:
         tasklog_obj.status = 1
-        tasklog_obj.result = 'error:  Authentication failed.'
+        tasklog_obj.result = e
         tasklog_obj.save()
 
+
 # 批量文件
-def file_transfer(bind_host_obj):
-    pass
+def file_transfer(tasklog_obj):
+    try:
+        # 主机对象
+        bind_host_obj = tasklog_obj.host_user_bind
+
+        print('task contnt:' ,tasklog_obj,tasklog_obj.content)
+    #     # 建立ssh连接 使用密码连接：
+    #     ssh = paramiko.SSHClient()
+    #     # 这行代码的作用是允许连接不在know_hosts文件中的主机。就是自动填写 yes
+    #     ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+    #
+    #     # timeout 设置超时时间
+    #     ssh.connect(bind_host_obj.host.ip_addr,
+    #                 bind_host_obj.host.port,
+    #                 bind_host_obj.host_user.username,
+    #                 bind_host_obj.host_user.password,
+    #                 timeout=15)
+    #
+    #     stdin, stdout, stderr = ssh.exec_command(cmd_str)
+    #
+    #     result = stdout.read() + stderr.read()
+    #
+    #     # 如果没有返回值
+    #     if len(result) > 0:
+    #         result = result.decode('utf8')
+    #         tasklog_obj.result = result
+    #     else:
+    #         tasklog_obj.result = 'cmd has no result.'
+    #
+    #     ssh.close()
+    #     tasklog_obj.status = 0
+    #     tasklog_obj.save()
+    except Exception as e:
+        print(e)
+        # tasklog_obj.status = 1
+        # tasklog_obj.result = e
+        # tasklog_obj.save()
 
 
 if __name__ == '__main__':
@@ -73,7 +104,6 @@ if __name__ == '__main__':
         4.每个子任务执行完毕后,自己把结果写入数据库
     """
     task_obj = models.Task.objects.get(id=task_id)
-    print(task_obj)
 
     # 创建进程池(multiprocessing包是Python中的多进程管理包)
     pool =  multiprocessing.Pool(processes=settings.MaxTaskProcesses) # Pool类用于需要执行的目标很多，而手动限制进程数量又太繁琐时，如果目标少且不用控制进程数量则可以用Process类。
