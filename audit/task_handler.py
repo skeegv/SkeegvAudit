@@ -1,8 +1,10 @@
+import os
 import json  # Json简介：Json，全名 JavaScript Object Notation，是一种轻量级的数据交换格式。
 from audit import models
 import subprocess  # subprocess模块允许我们创建子进程,连接他们的输入/输出/错误管道，还有获得返回值。
 from threading import Thread  # 操作线程的模块(Thread 是threading模块中最重要的类之一，可以使用它来创建线程)
-from SkeegvAudit import settings
+# from SkeegvAudit import settings
+from django.conf import settings
 from django.db.transaction import atomic  # 数据库事务(atomic块中必须注意try的使用，如果手动捕获了程序错误会导致atomic包装器捕获不到异常，也就不会回滚。要么try内代码不影响事务操作，要么就捕获异常后raise出，让atomic可以正常回滚)
 
 
@@ -38,14 +40,17 @@ class Task(object):
                 'cmd': cmd_text # 或 file_transfer = 文件
             };
             """
-
+            print(task_data)
             # 验证文件类型是否有值
             if self.task_data.get('task_type') == 'cmd':
                 if self.task_data.get('cmd') and self.task_data.get('selected_host_ids'):
                     return True
                 self.errors.append({'invalid_argument': 'cmd or host_list is empty!'})
             elif self.task_data.get('task_type') == "file_transfer":
-                if self.task_data.get('file_transfer') and self.task_data.get('selected_host_ids'):
+                #{"task_type":"file_transfer","selected_host_ids":["5","6"],"file_transfer_type":"send","random_str":"6b2qj3r9","remote_path":"/etc/"}
+                if self.task_data.get('task_type') and self.task_data.get('selected_host_ids'):
+                    print(task_data)
+                    # [{"invalid_argument": "file or host_list is empty!"}, {"invalid_data": "task_data is not exist"}]
                     return True
                 self.errors.append({'invalid_argument': 'file or host_list is empty!'})
             else:
@@ -118,13 +123,14 @@ class Task(object):
     @atomic  # 在需要进行事务处理的加上 @atomic 装饰器(原子性)
     def file_transfer(self):
         """批量文件"""
-        print('run multi file_transfer')
+        # task_data: {"task_type":"file_transfer","selected_host_ids":["5","6"],"file_transfer_type":"send","random_str":"6b2qj3r9","remote_path":"/etc/"}
+
         # 创建 任务记录
         task_obj = models.Task.objects.create(
             # task_type=self.task_data.get('task_type'),  0对应数据库里 task_choices 的 cmd
-            task_type=0,
+            task_type=1,    # 1: file_transfer
             account=self.request.user.account,
-            content=json.dumps(self.task_data),
+            content=json.dumps(self.task_data), # 这里直接把前端发来的 data 序列化并写入数据库:{"task_type": "file_transfer", "selected_host_ids": ["1", "2", "3", "4", "5"], "file_transfer_type": "send", "random_str": "4uqv379n"}
         )
 
         # 主机会重复,所以要去重 (Python set() 函数Python 内置函数描述set() 函数创建一个无序不重复元素集，可进行关系测试，删除重复数据，还可以计算交集、差集、并集等。)
@@ -145,6 +151,13 @@ class Task(object):
         当然用列表解析代替 for 循环会更快！！
         """
         models.TaskLog.objects.bulk_create(tasklog_objs, 100)
+
+        # 创建以 Task id 为文件名的下载目录,这样会更高效(不然的话,之后比如执行1W次任务,每次创建都需要判断这个文件在不在才能执行操作,在这里创建了,以后所有任务要下载直接使用就可以,无需再做额外的判断)
+        download_dir = "{download_base_dir}/{task_id}".format(download_base_dir=settings.FILE_DOWNLOADS,
+                                                              task_id=task_obj.id)
+        if not os.path.exists(download_dir):    #  检查某个路径
+            os.makedirs(download_dir, exist_ok=True)    # 该参数为真时执行mkdir -p(加上此选项后,系统将自动建立好那些尚不存在的目录,即一次可以建立多个目录;)
+
 
         # 执行任务
         """

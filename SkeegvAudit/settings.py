@@ -135,3 +135,6 @@ MaxTaskProcesses = 10
 
 # 文件上传暂存路径
 FILE_UPLOADS = os.path.join(BASE_DIR, 'uploads')
+
+# 文件下载暂存路径
+FILE_DOWNLOADS = os.path.join(BASE_DIR, 'download')
