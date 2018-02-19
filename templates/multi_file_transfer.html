@@ -27,13 +27,13 @@
                 </div>
                 <div class="panel-body">
                     {# 文件操作下拉选择框 #}
-                    <select name="transfer-type" onchange="ToggUploadEle(this)">
+                    <select name="transfer-type" class="form-control input-lg text-bold" onchange="ToggUploadEle(this)">
                         <option value="send">发送文件到远程主机</option>
                         <option value="get">从远程主机下载文件</option>
                     </select>
 
                     {# 文件上传插件 dropzone ( action 不加默认当前页面路径 http://127.0.0.1:8000/api/task_file_upload/?random_str=lkdw59fc )#}
-                    <form id="file_dropzone" action="{% url 'task_file_upload' %}?random_str={{ random_str }}" class="dropzone dz-clickable">
+                    <form id="file_dropzone" action="{% url 'task_file_upload' %}?random_str={{ random_str }}" class="dropzone dz-clickable download_hide">
                         <div class="dz-default dz-message">
                             <div class="dz-icon">
                                 <i class="demo-pli-upload-to-cloud icon-5x"></i>
@@ -44,21 +44,29 @@
                             </div>
                         </div>
                     </form>
+
                     {# 后端 multi_file_transfer 返回的字典(既随机字符串) #}
                     <input type="hidden" value="{{ random_str }}" name="random_str">
 
                     {# 远程路径输入框 #}
-                    <input id="remote_path" class="form-control" type="text" placeholder="远程路径">
-
+                    <input id="remote_path" class="form-control text-bold input-lg " type="text" placeholder="远程路径">
 
                     {# Task 进度条 #}
-                    <div class="progress progress-striped active">
+                    <div class="progress  progress-striped active">
                         <div id="task_progress" style="width: 0%;" class="progress-bar progress-bar-dark"></div>
                     </div>
+
                     {# 执行 按钮 #}
-                    <button onclick="PostTask('file_transfer')" id="demo-bootbox-alert" class="btn btn-info  pull-left">执行</button>
+                    <button onclick="PostTask('file_transfer')" id="demo-bootbox-alert" class="btn btn-info ">执行</button>
+
+
+                    {# 下载任务文件到本地 按钮 (center-block 居中)#}
+                    <a id="file_download_btn"  class="btn btn-primary download_hide hide">下载任务文件到本地</a>
+
+
                     {# 终止 按钮 #}
-                    <button class="btn btn-purple pull-right">终止</button>
+                    <button class="btn btn-danger pull-right ">终止</button>
+
                 </div>
             </div>
             <!--===================================================-->
@@ -79,13 +87,12 @@
     <script>
     //判断是上传还是下载(下载就需要隐藏上传文件的标签)
     function ToggUploadEle(self) {
-        console.log($(self).val());
         if($(self).val() == "get"){
-            $(self).next().addClass("hide")
+            $('.download_hide').addClass("hide");
+            $('#file_download_btn').addClass('hide')
         }else{
-            $(self).next().removeClass("hide")
+            $('.download_hide').removeClass("hide")
         }
-
     }
     </script>
 <!--===================================================-->

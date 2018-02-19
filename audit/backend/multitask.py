@@ -68,13 +68,15 @@ def file_transfer(tasklog_obj,task_id, task_content):
                                         account_id,
                                         task_data.get('random_str'))
 
+            # 总文件数列表
             upload_file_count = 0
             # 列出本地存放文件的路径下的所有文件并发送
             for file_name in os.listdir(local_path):
                 sftp.put('%s/%s' % (local_path, file_name), '%s/%s' % (task_data.get('remote_path'), file_name))
 
-                result = 'Sent from : %s/%s' % (local_path, file_name), 'here to : %s/%s' % (
-                task_data.get('remote_path'), file_name)
+                result = 'Sent from : %s/%s' % (local_path, file_name), 'here to : %s/%s' % (task_data.get('remote_path'), file_name)
+
+                # 添加到列表 并 计数
                 send_file_list.append(result)
                 upload_file_count += 1
 
@@ -102,12 +104,15 @@ def file_transfer(tasklog_obj,task_id, task_content):
 
         # 关闭连接
         t.close()
-
+        # 将send_file_list 写入数据库里的 result
         tasklog_obj.result = send_file_list
+        # 更改数据库里的状态 0:成功
         tasklog_obj.status = 0
         tasklog_obj.save()
     except Exception as e:
+        # 更改数据库里的状态 1:失败
         tasklog_obj.status = 1
+        # 将错误信息写入数据库里的 result
         tasklog_obj.result = str(e)
         tasklog_obj.save()
 

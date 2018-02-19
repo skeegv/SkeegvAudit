@@ -43,4 +43,9 @@ urlpatterns = [
     url(r'^api/hostlist/$', views.get_host_list,name='get_host_list'),
     url(r'^api/token/$', views.get_token,name='get_token'),
     url(r'^api/task/file_upload/$', views.task_file_upload, name='task_file_upload'),
+
+    # 文件
+    url(r'^api/task/file_download/$', views.task_file_download, name='task_file_download'),
+
+
 ]

@@ -1,14 +1,17 @@
+import os
 import json
 import random
 import string
-import os
+import zipfile
 from audit import models
 from audit import task_handler
+from django.conf import settings
+from wsgiref.util import FileWrapper  # from django.core.servers.basehttp import FileWrapper
 from django.shortcuts import render, redirect, HttpResponse
 from django.contrib.auth import authenticate, login, logout  # 用于用户检测,用户登录,退出
 from django.contrib.auth.decorators import login_required  # 用于检测用户是否已登录
-from django.views.decorators.csrf import csrf_exempt    # 免除csrf_token 验证
-from django.conf import settings
+from django.views.decorators.csrf import csrf_exempt  # 免除csrf_token 验证
+
 
 # json 扩展:支持时间格式化
 class JsonCustomEncoder(json.JSONEncoder):
@@ -17,6 +20,7 @@ class JsonCustomEncoder(json.JSONEncoder):
         data = json.dumps(result, cls=JsonCustomEncoder)
         return HttpResponse(data)
     """
+
     # 我们有 default 方法 就会优先执行我们自己写的
     def default(self, value):
         from datetime import date
@@ -210,11 +214,11 @@ def multi_file_transfer(request):
     random_str = ''.join((random.sample(string.ascii_lowercase + string.digits, 8)))
 
     # Python 的内建函数 locals() 。它返回的字典对所有局部变量的名称与值进行映射，
-    return render(request,'multi_file_transfer.html', locals())
+    return render(request, 'multi_file_transfer.html', locals())
 
 
 @login_required
-@csrf_exempt    #免除 cdrf_token 验证
+@csrf_exempt  # 免除 cdrf_token 验证
 def task_file_upload(request):
     # 随机字符串
     random_str = request.GET.get("random_str")
@@ -225,7 +229,7 @@ def task_file_upload(request):
     # 如果文件上传暂存路径不存在 既 创建
     if not os.path.isdir(upload_to):
         # 递归创建 如不需要可以  os.mkdir() os.makedirs 函数还有第三个参数 exist_ok，该参数为真时执行mkdir -p，但如果给出了mode参数，目标目录已经存在并且与即将创建的目录权限不一致时，会抛出OSError异常。
-        os.makedirs(upload_to,exist_ok=True)
+        os.makedirs(upload_to, exist_ok=True)
 
     # 获取上传的文件对象
     file_obj = request.FILES.get('file')
@@ -245,3 +249,48 @@ def task_file_upload(request):
         <MultiValueDict: {'file': [<InMemoryUploadedFile: 26073028_165757184038577_8143277732885692416_n.jpg (image/jpeg)>]}>
     """
     return HttpResponse('ok')
+
+
+@login_required
+def task_file_download(request):
+    task_id = request.GET.get('task_id')
+    task_file_path = "%s/%s" %(settings.FILE_DOWNLOADS,task_id)
+
+    return send_zipfile(request, task_id, task_file_path)
+
+
+def send_zipfile(request, task_id, file_path):
+    """
+    创建磁盘上的文件传输块8KB，不将整个文件加载到内存中。
+    类似的方法可以用于大型动态PDF文件。
+    """
+
+    ####################   文件打包开始   ####################
+
+    zip_file_name = "task_id%s_files" % task_id
+    # 创建一个ZipFile对象，表示一个zip文件。
+    # zip_file_name 表示文件名
+    # w 指示打开zip文件的模式 (默认值为’r’，表示读已经存在的zip文件，也可以为’w’或’a’，’w’表示新建一个zip文档或覆盖一个已经存在的zip文档，’a’表示将数据附加到一个现存的zip文档中。)
+    # ZIP_DEFLATED 表示在写zip文档时使用的压缩方法，它的值可以是zipfile. ZIP_STORED 或zipfile. ZIP_DEFLATED。如果要操作的zip文件大小超过2G，应该将allowZip64设置为True。
+    archive = zipfile.ZipFile(zip_file_name, 'w', zipfile.ZIP_DEFLATED)
+
+    file_list = os.listdir(file_path)
+    for filename in file_list:
+        # 将指定文件添加到zip文档中。第一个参数为文件路径，第二个参数arcname为添加到zip文档之后保存的名称, 第三个参数compress_type表示压缩方法，它的值可以是zipfile. ZIP_STORED 或zipfile. ZIP_DEFLATED。
+        archive.write('%s/%s' % (file_path, filename), arcname=filename)
+
+    # 写入的任何文件在关闭之前都不会真正写入磁盘。
+    archive.close()
+
+    ####################   文件打包完毕   ####################
+
+    # 需要先将文件读入内存，再进行传输。
+    wrapper = FileWrapper(open(zip_file_name, 'rb'))
+    # 更改 Headers 头部信息 (浏览器想怎么处理返回的数据都是根据content_type 返回的格式来进行处理的.
+    response = HttpResponse(wrapper, content_type="application/zip")
+    # 告诉浏览器 这个文件是以附件的形式下载
+    response['Content-Disposition'] = "attachment; filename=%s.zip" % zip_file_name
+    # 文件大小
+    response['Content-Length'] = os.path.getsize(zip_file_name)
+
+    return response
